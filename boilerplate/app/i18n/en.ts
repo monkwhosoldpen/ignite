@@ -47,6 +47,10 @@ const en = {
     componentsTab: "Components",
     debugTab: "Debug",
     communityTab: "Community",
+    chatsTab: "Chats",
+    exploreTab: "Explore",
+    settingsTab: "Settings",
+    usernameTab: "Username",
     podcastListTab: "Podcast",
   },
   demoCommunityScreen: {
@@ -71,6 +75,77 @@ const en = {
     hireUs:
       "Whether it's running a full project or getting teams up to speed with our hands-on training, Infinite Red can help with just about any React Native project.",
     hireUsLink: "Send us a message",
+  },
+  demoChatsScreen: {
+    title: "Connect with chats",
+    tagLine:
+      "Join Infinite Red's chat community and engage in real-time conversations with React Native engineers worldwide!",
+    joinUsOnDiscordTitle: "Join us on Discord",
+    joinUsOnDiscord:
+      "Looking for a place to chat with React Native developers in real-time? Join our Discord server! It's a vibrant community where you can ask questions, share knowledge, and connect with fellow developers.",
+    joinDiscordLink: "Join our Discord Server",
+    makeChatsEvenBetterTitle: "Make our chats even better",
+    makeChatsEvenBetter:
+      "Have ideas to improve our chat community? We'd love to hear them! We're always looking for ways to foster better discussions and create valuable connections. Join us on GitHub to contribute to the future of our chat platform.",
+    contributeToChatsLink: "Contribute to Chats",
+    theLatestInReactNativeTitle: "The latest in React Native",
+    theLatestInReactNative: "Stay updated with the newest trends and developments in the React Native ecosystem through our community discussions.",
+    reactNativeRadioLink: "React Native Radio",
+    reactNativeNewsletterLink: "React Native Newsletter",
+    reactNativeLiveLink: "React Native Live",
+    chainReactConferenceLink: "Chain React Conference",
+    hireUsTitle: "Hire Infinite Red for your next project",
+    hireUs:
+      "Whether it's running a full project or getting teams up to speed with our hands-on training, Infinite Red can help with just about any React Native project.",
+    hireUsLink: "Send us a message",
+  },
+  demoExploreScreen: {
+    title: "Explore Content",
+    tagLine: "Discover amazing content and resources curated for you.",
+    onlyFavorites: "Only favorites",
+    noFavoritesEmptyState: {
+      heading: "No favorite items yet",
+      content: "Start exploring and mark your favorite items to see them here.",
+    },
+    favoriteButton: "Favorite",
+    unfavoriteButton: "Unfavorite",
+    accessibility: {
+      switch: "Toggle favorites only",
+      cardHint: "Double tap to {{action}} this item",
+      favoriteAction: "Favorite",
+      favoriteIcon: "Favorite",
+      unfavoriteIcon: "Unfavorite",
+    },
+  },
+  demoSettingsScreen: {
+    title: "Settings",
+    reportBugs: "Report Bugs",
+    reactotron: "Send to Reactotron",
+    iosReactotronHint:
+      "If this doesn't work, ensure the Reactotron desktop app is running and reload app.",
+    androidReactotronHint:
+      "If this doesn't work, ensure the Reactotron desktop app is running, run adb reverse tcp:9090 tcp:9090 from your terminal, and reload the app.",
+    macosReactotronHint:
+      "If this doesn't work, ensure the Reactotron desktop app is running and reload app.",
+    webReactotronHint:
+      "If this doesn't work, ensure the Reactotron desktop app is running and reload app.",
+    windowsReactotronHint:
+      "If this doesn't work, ensure the Reactotron desktop app is running and reload app.",
+  },
+  demoUsernameScreen: {
+    signedInTitle: "Welcome Back!",
+    signedInSubtitle: "You are successfully signed in to your account.",
+    signedOutTitle: "Welcome!",
+    signedOutSubtitle: "Sign in to access your personalized experience.",
+    signIn: "Sign In",
+    signOut: "Sign Out",
+    contentTitle: "Your Profile",
+    authenticatedContent: "Manage your account settings and preferences. View your activity and customize your experience.",
+    unauthenticatedContent: "Create an account or sign in to unlock all features and get a personalized experience.",
+    featuresTitle: "Available Features",
+    feature1: "Personalized dashboard with your content",
+    feature2: "Sync your data across all devices",
+    feature3: "Access exclusive member features",
   },
   demoShowroomScreen: {
     jumpStart: "Components to jump start your project!",

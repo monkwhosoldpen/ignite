@@ -1,4 +1,4 @@
-import { ExpoConfig, ConfigContext } from "@expo/config"
+import { ExpoConfig, ConfigContext } from "expo/config"
 
 /**
  * Use tsx/cjs here so we can use TypeScript for our Config Plugins
@@ -19,8 +19,37 @@ module.exports = ({ config }: ConfigContext): Partial<ExpoConfig> => {
 
   return {
     ...config,
+    name: "React Native Reusables",
+    slug: "reactnativereusablesshowcase",
+    version: "0.0.1",
+    orientation: "portrait",
+    icon: "./assets/images/app-icon-all.png",
+    userInterfaceStyle: "automatic",
+    // @ts-ignore: New Arch flag
+    newArchEnabled: true,
+    runtimeVersion: {
+      policy: "appVersion",
+    },
+    splash: {
+      image: "./assets/images/welcome-face.png",
+      resizeMode: "contain",
+      backgroundColor: "#0A0A0A",
+    },
+    assetBundlePatterns: ["**/*"],
+    web: {
+      bundler: "metro",
+      sourceMaps: true,
+      output: "static",
+      favicon: "./assets/images/app-icon-web-favicon.png",
+      themeColor: "#0A0A0A",
+    },
     ios: {
       ...config.ios,
+      scheme: "reactnativereusablesshowcase",
+      supportsTablet: true,
+      bundleIdentifier: 'com.reactnativereusables.app',
+      associatedDomains: ['applinks:reactnativereusables.com'],
+      googleServicesFile: './GoogleService-Info.plist',
       // This privacyManifests is to get you started.
       // See Expo's guide on apple privacy manifests here:
       // https://docs.expo.dev/guides/apple-privacy/
@@ -35,7 +64,33 @@ module.exports = ({ config }: ConfigContext): Partial<ExpoConfig> => {
           },
         ],
       },
+      infoPlist: {
+        ITSAppUsesNonExemptEncryption: false,
+      },
     },
-    plugins: [...existingPlugins, "@react-native-firebase/app", "@react-native-firebase/messaging"],
+    android: {
+      ...config.android,
+      scheme: "reactnativereusablesshowcase",
+      // @ts-ignore: Edge to Edge flag
+      edgeToEdgeEnabled: true,
+      adaptiveIcon: {
+        foregroundImage: "./assets/images/adaptive-icon.png",
+        backgroundColor: "#0A0A0A",
+      },
+      package: "com.monkwhosoldpen.mobileui",
+      googleServicesFile: './google-services.json',
+    },
+    plugins: [...existingPlugins, "expo-router", "expo-secure-store", "@react-native-firebase/app", "@react-native-firebase/messaging"],
+    experiments: {
+      typedRoutes: true,
+    },
+    extra: {
+      router: {
+        origin: false,
+      },
+      eas: {
+        projectId: '143698d9-060c-400e-89d2-ca0cdb9fd2f3',
+      },
+    },
   }
 }

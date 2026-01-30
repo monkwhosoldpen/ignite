@@ -49,6 +49,7 @@ const fr: Translations = {
     componentsTab: "Composants",
     debugTab: "Débogage",
     communityTab: "Communauté",
+    chatsTab: "Chats",
     podcastListTab: "Podcasts",
   },
   demoCommunityScreen: {
@@ -73,6 +74,29 @@ const fr: Translations = {
     hireUsTitle: "Engagez Infinite Red pour votre prochain projet",
     hireUs:
       "Que ce soit pour gérer un projet complet ou pour former des équipes à notre formation pratique, Infinite Red peut vous aider pour presque tous les projets React Native.",
+    hireUsLink: "Envoyez-nous un message",
+  },
+  demoChatsScreen: {
+    title: "Connectez-vous avec les chats",
+    tagLine:
+      "Rejoignez la communauté de chats d'Infinite Red et participez à des conversations en temps réel avec des ingénieurs React Native du monde entier!",
+    joinUsOnDiscordTitle: "Rejoignez-nous sur Discord",
+    joinUsOnDiscord:
+      "Vous cherchez un endroit pour discuter avec des développeurs React Native en temps réel? Rejoignez notre serveur Discord! C'est une communauté dynamique où vous pouvez poser des questions, partager des connaissances et vous connecter avec d'autres développeurs.",
+    joinDiscordLink: "Rejoignez notre serveur Discord",
+    makeChatsEvenBetterTitle: "Améliorez nos chats",
+    makeChatsEvenBetter:
+      "Vous avez des idées pour améliorer notre communauté de chats? Nous aimerions les entendre! Nous cherchons toujours des moyens de favoriser de meilleures discussions et de créer des connexions précieuses. Rejoignez-nous sur GitHub pour contribuer à l'avenir de notre plateforme de chats.",
+    contributeToChatsLink: "Contribuer aux Chats",
+    theLatestInReactNativeTitle: "Le dernier en React Native",
+    theLatestInReactNative: "Restez informé des dernières tendances et développements dans l'écosystème React Native grâce à nos discussions communautaires.",
+    reactNativeRadioLink: "React Native Radio",
+    reactNativeNewsletterLink: "Newsletter React Native",
+    reactNativeLiveLink: "React Native Live",
+    chainReactConferenceLink: "Conférence Chain React",
+    hireUsTitle: "Engagez Infinite Red pour votre prochain projet",
+    hireUs:
+      "Qu'il s'agisse de gérer un projet complet ou de former des équipes grâce à notre formation pratique, Infinite Red peut aider avec presque tous les projets React Native.",
     hireUsLink: "Envoyez-nous un message",
   },
   demoShowroomScreen: {

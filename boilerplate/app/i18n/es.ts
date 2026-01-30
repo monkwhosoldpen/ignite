@@ -49,6 +49,7 @@ const es: Translations = {
     componentsTab: "Componentes",
     debugTab: "Debug",
     communityTab: "Comunidad",
+    chatsTab: "Chats",
     podcastListTab: "Podcasts",
   },
   demoCommunityScreen: {
@@ -71,6 +72,29 @@ const es: Translations = {
     reactNativeLiveLink: "React Native Live",
     chainReactConferenceLink: "Conferencia Chain React",
     hireUsTitle: "Trabaja con Infinite Red en tu próximo proyecto",
+    hireUs:
+      "Ya sea para gestionar un proyecto de inicio a fin o educación a equipos a través de nuestros cursos y capacitación práctica, Infinite Red puede ayudarte en casi cualquier proyecto de React Native.",
+    hireUsLink: "Envíanos un mensaje",
+  },
+  demoChatsScreen: {
+    title: "Conecta con chats",
+    tagLine:
+      "Únete a la comunidad de chats de Infinite Red y participa en conversaciones en tiempo real con ingenieros de React Native de todo el mundo.",
+    joinUsOnDiscordTitle: "Únete a nosotros en Discord",
+    joinUsOnDiscord:
+      "¿Buscas un lugar para charlar con desarrolladores de React Native en tiempo real? Únete a nuestro servidor de Discord. Es una comunidad vibrante donde puedes hacer preguntas, compartir conocimientos y conectarte con otros desarrolladores.",
+    joinDiscordLink: "Únete a nuestro servidor de Discord",
+    makeChatsEvenBetterTitle: "Mejora nuestros chats",
+    makeChatsEvenBetter:
+      "¿Tienes ideas para mejorar nuestra comunidad de chats? ¡Nos encantaría escucharlas! Estamos siempre buscando formas de fomentar mejores discusiones y crear conexiones valiosas. Únete a nosotros en GitHub para contribuir al futuro de nuestra plataforma de chats.",
+    contributeToChatsLink: "Contribuir a Chats",
+    theLatestInReactNativeTitle: "Lo último en React Native",
+    theLatestInReactNative: "Mantente actualizado con las últimas tendencias y desarrollos en el ecosistema de React Native a través de nuestras discusiones en la comunidad.",
+    reactNativeRadioLink: "React Native Radio",
+    reactNativeNewsletterLink: "Newsletter de React Native",
+    reactNativeLiveLink: "React Native Live",
+    chainReactConferenceLink: "Conferencia Chain React",
+    hireUsTitle: "Contrata a Infinite Red para tu próximo proyecto",
     hireUs:
       "Ya sea para gestionar un proyecto de inicio a fin o educación a equipos a través de nuestros cursos y capacitación práctica, Infinite Red puede ayudarte en casi cualquier proyecto de React Native.",
     hireUsLink: "Envíanos un mensaje",

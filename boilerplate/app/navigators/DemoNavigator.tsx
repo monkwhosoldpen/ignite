@@ -5,9 +5,13 @@ import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { Icon } from "@/components/Icon"
 import { EpisodeProvider } from "@/context/EpisodeContext"
 import { translate } from "@/i18n/translate"
+import { DemoChatsScreen } from "@/screens/DemoChatsScreen"
 import { DemoCommunityScreen } from "@/screens/DemoCommunityScreen"
 import { DemoDebugScreen } from "@/screens/DemoDebugScreen"
+import { DemoExploreScreen } from "@/screens/DemoExploreScreen"
 import { DemoPodcastListScreen } from "@/screens/DemoPodcastListScreen"
+import { DemoSettingsScreen } from "@/screens/DemoSettingsScreen"
+import { DemoUsernameScreen } from "@/screens/DemoUsernameScreen"
 import { DemoShowroomScreen } from "@/screens/DemoShowroomScreen/DemoShowroomScreen"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
@@ -43,7 +47,7 @@ export function DemoNavigator() {
           tabBarItemStyle: themed($tabBarItem),
         }}
       >
-        <Tab.Screen
+        {/* <Tab.Screen
           name="DemoShowroom"
           component={DemoShowroomScreen}
           options={{
@@ -56,9 +60,9 @@ export function DemoNavigator() {
               />
             ),
           }}
-        />
+        /> */}
 
-        <Tab.Screen
+        {/* <Tab.Screen
           name="DemoCommunity"
           component={DemoCommunityScreen}
           options={{
@@ -69,6 +73,62 @@ export function DemoNavigator() {
                 color={focused ? colors.tint : colors.tintInactive}
                 size={30}
               />
+            ),
+          }}
+        /> */}
+
+        <Tab.Screen
+          name="DemoChats"
+          component={DemoChatsScreen}
+          options={{
+            tabBarLabel: translate("demoNavigator:chatsTab"),
+            tabBarIcon: ({ focused }) => (
+              <Icon
+                icon="chat"
+                color={focused ? colors.tint : colors.tintInactive}
+                size={30}
+              />
+            ),
+          }}
+        />
+
+        {/* <Tab.Screen
+          name="DemoExplore"
+          component={DemoExploreScreen}
+          options={{
+            tabBarLabel: translate("demoNavigator:exploreTab"),
+            tabBarIcon: ({ focused }) => (
+              <Icon
+                icon="view"
+                color={focused ? colors.tint : colors.tintInactive}
+                size={30}
+              />
+            ),
+          }}
+        /> */}
+
+        <Tab.Screen
+          name="DemoSettings"
+          component={DemoSettingsScreen}
+          options={{
+            tabBarLabel: translate("demoNavigator:settingsTab"),
+            tabBarIcon: ({ focused }) => (
+              <Icon
+                icon="settings"
+                color={focused ? colors.tint : colors.tintInactive}
+                size={30}
+              />
+            ),
+          }}
+        />
+
+        {/* <Tab.Screen
+          name="DemoDebug"
+          component={DemoDebugScreen}
+          options={{
+            tabBarLabel: translate("demoNavigator:debugTab"),
+            tabBarIcon: ({ focused }) => (
+              <Icon icon="debug" color={focused ? colors.tint : colors.tintInactive} size={30} />
             ),
           }}
         />
@@ -86,15 +146,19 @@ export function DemoNavigator() {
         />
 
         <Tab.Screen
-          name="DemoDebug"
-          component={DemoDebugScreen}
+          name="DemoUsername"
+          component={DemoUsernameScreen}
           options={{
-            tabBarLabel: translate("demoNavigator:debugTab"),
+            tabBarLabel: translate("demoNavigator:usernameTab"),
             tabBarIcon: ({ focused }) => (
-              <Icon icon="debug" color={focused ? colors.tint : colors.tintInactive} size={30} />
+              <Icon
+                icon="user"
+                color={focused ? colors.tint : colors.tintInactive}
+                size={30}
+              />
             ),
           }}
-        />
+        /> */}
       </Tab.Navigator>
     </EpisodeProvider>
   )

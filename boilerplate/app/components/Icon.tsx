@@ -115,6 +115,7 @@ export const iconRegistry = {
   caretLeft: require("@assets/icons/caretLeft.png"),
   caretRight: require("@assets/icons/caretRight.png"),
   check: require("@assets/icons/check.png"),
+  chat: require("@assets/icons/demo/slack.png"), // @demo remove-current-line
   clap: require("@assets/icons/demo/clap.png"), // @demo remove-current-line
   community: require("@assets/icons/demo/community.png"), // @demo remove-current-line
   components: require("@assets/icons/demo/components.png"), // @demo remove-current-line
@@ -130,6 +131,7 @@ export const iconRegistry = {
   podcast: require("@assets/icons/demo/podcast.png"), // @demo remove-current-line
   settings: require("@assets/icons/settings.png"),
   slack: require("@assets/icons/demo/slack.png"), // @demo remove-current-line
+  user: require("@assets/icons/lock.png"), // @demo remove-current-line
   view: require("@assets/icons/view.png"),
   x: require("@assets/icons/x.png"),
 }
