@@ -25,6 +25,7 @@ import { KeyboardProvider } from "react-native-keyboard-controller"
 import { initialWindowMetrics, SafeAreaProvider } from "react-native-safe-area-context"
 
 import { AuthProvider } from "./context/AuthContext" // @demo remove-current-line
+import { NotificationProvider } from "./context/NotificationContext" // @demo remove-current-line
 import { initI18n } from "./i18n"
 import { AppNavigator } from "./navigators/AppNavigator"
 import { useNavigationPersistence } from "./navigators/navigationUtilities"
@@ -42,6 +43,7 @@ const config = {
     Login: {
       path: "",
     },
+    SignUp: "signup",
     Welcome: "welcome",
     Demo: {
       screens: {
@@ -98,15 +100,17 @@ export function App() {
       <KeyboardProvider>
         {/* @demo remove-block-start */}
         <AuthProvider>
-          {/* @demo remove-block-end */}
-          <ThemeProvider>
-            <AppNavigator
-              linking={linking}
-              initialState={initialNavigationState}
-              onStateChange={onNavigationStateChange}
-            />
-          </ThemeProvider>
-          {/* @demo remove-block-start */}
+          <NotificationProvider>
+            {/* @demo remove-block-end */}
+            <ThemeProvider>
+              <AppNavigator
+                linking={linking}
+                initialState={initialNavigationState}
+                onStateChange={onNavigationStateChange}
+              />
+            </ThemeProvider>
+            {/* @demo remove-block-start */}
+          </NotificationProvider>
         </AuthProvider>
         {/* @demo remove-block-end */}
       </KeyboardProvider>

@@ -7,9 +7,9 @@ import { Text } from "@/components/Text"
 import { useAuth } from "@/context/AuthContext" // @demo remove-current-line
 import { isRTL } from "@/i18n"
 import type { AppStackScreenProps } from "@/navigators/navigationTypes" // @demo remove-current-line
-import type { ThemedStyle } from "@/theme/types"
 import { useAppTheme } from "@/theme/context"
 import { $styles } from "@/theme/styles"
+import type { ThemedStyle } from "@/theme/types"
 import { useHeader } from "@/utils/useHeader" // @demo remove-current-line
 import { useSafeAreaInsetsStyle } from "@/utils/useSafeAreaInsetsStyle"
 

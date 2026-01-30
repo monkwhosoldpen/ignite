@@ -1,13 +1,29 @@
-import { createContext, FC, PropsWithChildren, useCallback, useContext, useMemo } from "react"
-import { useMMKVString } from "react-native-mmkv"
+import {
+  createContext,
+  FC,
+  PropsWithChildren,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react"
+import { Session, User, AuthError } from "@supabase/supabase-js"
+
+import { supabase } from "@/services/supabase"
+
+export type AuthResult = { success: true } | { success: false; error: AuthError }
 
 export type AuthContextType = {
   isAuthenticated: boolean
-  authToken?: string
-  authEmail?: string
-  setAuthToken: (token?: string) => void
+  isLoading: boolean
+  user: User | null
+  session: Session | null
+  authEmail: string
   setAuthEmail: (email: string) => void
-  logout: () => void
+  signIn: (email: string, password: string) => Promise<AuthResult>
+  signUp: (email: string, password: string) => Promise<AuthResult>
+  logout: () => Promise<void>
   validationError: string
 }
 
@@ -16,13 +32,78 @@ export const AuthContext = createContext<AuthContextType | null>(null)
 export interface AuthProviderProps {}
 
 export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({ children }) => {
-  const [authToken, setAuthToken] = useMMKVString("AuthProvider.authToken")
-  const [authEmail, setAuthEmail] = useMMKVString("AuthProvider.authEmail")
+  const [user, setUser] = useState<User | null>(null)
+  const [session, setSession] = useState<Session | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [authEmail, setAuthEmail] = useState("")
 
-  const logout = useCallback(() => {
-    setAuthToken(undefined)
+  // Initialize: check existing session and listen for auth changes
+  useEffect(() => {
+    const initializeAuth = async () => {
+      try {
+        const {
+          data: { session: currentSession },
+        } = await supabase.auth.getSession()
+        setSession(currentSession)
+        setUser(currentSession?.user ?? null)
+      } catch (error) {
+        console.error("Failed to get session:", error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    initializeAuth()
+
+    // Listen for auth state changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, newSession) => {
+      setSession(newSession)
+      setUser(newSession?.user ?? null)
+    })
+
+    return () => subscription.unsubscribe()
+  }, [])
+
+  const signIn = useCallback(async (email: string, password: string): Promise<AuthResult> => {
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+
+    if (error) {
+      return { success: false, error }
+    }
+
+    setSession(data.session)
+    setUser(data.user)
+    return { success: true }
+  }, [])
+
+  const signUp = useCallback(async (email: string, password: string): Promise<AuthResult> => {
+    // Sign up with auto-confirm (instant access, no email confirmation)
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+    })
+
+    if (error) {
+      return { success: false, error }
+    }
+
+    // If session exists, user is logged in immediately
+    if (data.session) {
+      setSession(data.session)
+      setUser(data.user)
+    }
+
+    return { success: true }
+  }, [])
+
+  const logout = useCallback(async () => {
+    await supabase.auth.signOut()
+    setSession(null)
+    setUser(null)
     setAuthEmail("")
-  }, [setAuthEmail, setAuthToken])
+  }, [])
 
   const validationError = useMemo(() => {
     if (!authEmail || authEmail.length === 0) return "can't be blank"
@@ -32,11 +113,14 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({ childre
   }, [authEmail])
 
   const value = {
-    isAuthenticated: !!authToken,
-    authToken,
+    isAuthenticated: !!session,
+    isLoading,
+    user,
+    session,
     authEmail,
-    setAuthToken,
     setAuthEmail,
+    signIn,
+    signUp,
     logout,
     validationError,
   }

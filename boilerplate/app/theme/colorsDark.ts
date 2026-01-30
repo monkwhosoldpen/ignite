@@ -1,50 +1,90 @@
+/**
+ * Modern Twitter/X-inspired Dark Theme
+ * Rich, vibrant, easy on eyes (not pure black)
+ */
 const palette = {
-  neutral900: "#FFFFFF",
-  neutral800: "#F4F2F1",
-  neutral700: "#D7CEC9",
-  neutral600: "#B6ACA6",
-  neutral500: "#978F8A",
-  neutral400: "#564E4A",
-  neutral300: "#3C3836",
-  neutral200: "#191015",
-  neutral100: "#000000",
+  // Rich dark blues (not pure black - easier on eyes)
+  neutral900: "#F1F5F9",  // Primary text (cream white)
+  neutral800: "#E2E8F0",  // Strong text
+  neutral700: "#94A3B8",  // Secondary text
+  neutral600: "#64748B",  // Muted text
+  neutral500: "#475569",  // Disabled
+  neutral400: "#334155",  // Borders
+  neutral300: "#1E293B",  // Elevated surfaces
+  neutral200: "#0F172A",  // Cards/surfaces
+  neutral100: "#020617",  // Background (rich dark blue)
 
-  primary600: "#F4E0D9",
-  primary500: "#E8C1B4",
-  primary400: "#DDA28E",
-  primary300: "#D28468",
-  primary200: "#C76542",
-  primary100: "#A54F31",
+  // Vibrant Blue (pops on dark)
+  primary600: "#E0F2FE",
+  primary500: "#1D9BF0",  // Twitter blue - stays vibrant
+  primary400: "#38BDF8",
+  primary300: "#0EA5E9",
+  primary200: "#0369A1",
+  primary100: "#0C4A6E",
 
-  secondary500: "#DCDDE9",
-  secondary400: "#BCC0D6",
-  secondary300: "#9196B9",
-  secondary200: "#626894",
-  secondary100: "#41476E",
+  // Success Green
+  secondary500: "#BBF7D0",
+  secondary400: "#4ADE80",
+  secondary300: "#22C55E",
+  secondary200: "#15803D",
+  secondary100: "#14532D",
 
-  accent500: "#FFEED4",
-  accent400: "#FFE1B2",
-  accent300: "#FDD495",
-  accent200: "#FBC878",
-  accent100: "#FFBB50",
+  // Warm Accent
+  accent500: "#FDE68A",
+  accent400: "#FBBF24",
+  accent300: "#F59E0B",
+  accent200: "#B45309",
+  accent100: "#78350F",
 
-  angry100: "#F2D6CD",
-  angry500: "#C03403",
+  // Error/Like (stays vibrant)
+  angry100: "#4C1D2C",
+  angry400: "#FB7185",
+  angry500: "#F43F5E",
 
-  overlay20: "rgba(25, 16, 21, 0.2)",
-  overlay50: "rgba(25, 16, 21, 0.5)",
+  // Overlays (lighter for dark mode)
+  overlay20: "rgba(248, 250, 252, 0.1)",
+  overlay50: "rgba(248, 250, 252, 0.2)",
 } as const
 
 export const colors = {
   palette,
   transparent: "rgba(0, 0, 0, 0)",
-  text: palette.neutral800,
-  textDim: palette.neutral600,
-  background: palette.neutral200,
+
+  // Text - high contrast on dark
+  text: palette.neutral900,
+  textDim: palette.neutral700,
+
+  // Background - rich dark, not pure black
+  background: palette.neutral100,
+
+  // Borders - visible but subtle
   border: palette.neutral400,
+
+  // Main accent - vibrant blue pops
   tint: palette.primary500,
-  tintInactive: palette.neutral300,
+  tintInactive: palette.neutral500,
+
+  // Separators
   separator: palette.neutral300,
+
+  // Errors
   error: palette.angry500,
   errorBackground: palette.angry100,
+
+  // === TWITTER-SPECIFIC EXTRAS ===
+
+  /** Like button heart - vibrant pink */
+  like: "#F91880",
+  /** Retweet green */
+  retweet: "#00BA7C",
+  /** Blue verified badge */
+  verified: "#1D9BF0",
+  /** Gold verified badge */
+  verifiedGold: "#F4AF01",
+  /** Card/elevated surface */
+  surface: palette.neutral200,
+  /** Subtle hover/press state */
+  surfaceHover: palette.neutral300,
+  /** Input backgrounds */
+  inputBackground: palette.neutral300,
 } as const

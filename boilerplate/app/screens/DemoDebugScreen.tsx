@@ -1,4 +1,4 @@
-import { FC, useCallback, useMemo } from "react"
+import { FC, useCallback, useMemo, useState } from "react"
 import {
   LayoutAnimation,
   Linking,
@@ -7,6 +7,8 @@ import {
   useColorScheme,
   View,
   ViewStyle,
+  Clipboard,
+  Alert,
 } from "react-native"
 import * as Application from "expo-application"
 
@@ -15,11 +17,12 @@ import { ListItem } from "@/components/ListItem"
 import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
 import { useAuth } from "@/context/AuthContext"
+import { useNotifications } from "@/context/NotificationContext"
 import { isRTL } from "@/i18n"
 import { DemoTabScreenProps } from "@/navigators/navigationTypes"
-import type { ThemedStyle } from "@/theme/types"
 import { useAppTheme } from "@/theme/context"
 import { $styles } from "@/theme/styles"
+import type { ThemedStyle } from "@/theme/types"
 
 /**
  * @param {string} url - The URL to open in the browser.
@@ -36,9 +39,35 @@ export const DemoDebugScreen: FC<DemoTabScreenProps<"DemoDebug">> = function Dem
 ) {
   const { setThemeContextOverride, themeContext, themed } = useAppTheme()
   const { logout } = useAuth()
+  const {
+    pushToken,
+    isPermissionGranted,
+    isLoading: notifLoading,
+    error: notifError,
+    requestNotificationPermission,
+    refreshPushToken,
+  } = useNotifications()
+  const [tokenCopied, setTokenCopied] = useState(false)
 
   // @ts-expect-error
   const usingFabric = global.nativeFabricUIManager != null
+
+  const handleCopyToken = useCallback(() => {
+    if (pushToken) {
+      Clipboard.setString(pushToken)
+      setTokenCopied(true)
+      setTimeout(() => setTokenCopied(false), 2000)
+    }
+  }, [pushToken])
+
+  const handleRequestPermission = useCallback(async () => {
+    const granted = await requestNotificationPermission()
+    if (granted) {
+      Alert.alert("Success", "Notification permission granted!")
+    } else {
+      Alert.alert("Permission Denied", "Notification permission was not granted.")
+    }
+  }, [requestNotificationPermission])
 
   const demoReactotron = useMemo(
     () => async () => {
@@ -148,6 +177,69 @@ export const DemoDebugScreen: FC<DemoTabScreenProps<"DemoDebug">> = function Dem
       <View style={themed($buttonContainer)}>
         <Button style={themed($button)} tx="common:logOut" onPress={logout} />
       </View>
+
+      {/* Notification Debug Section */}
+      <Text style={themed($sectionTitle)} preset="heading" text="Push Notifications" />
+      <View style={themed($itemsContainer)}>
+        <ListItem
+          LeftComponent={
+            <View style={themed($item)}>
+              <Text preset="bold">Platform</Text>
+              <Text>{Platform.OS}</Text>
+            </View>
+          }
+        />
+        <ListItem
+          LeftComponent={
+            <View style={themed($item)}>
+              <Text preset="bold">Permission</Text>
+              <Text style={{ color: isPermissionGranted ? "green" : "red" }}>
+                {isPermissionGranted ? "Granted" : "Not Granted"}
+              </Text>
+            </View>
+          }
+        />
+        <ListItem
+          LeftComponent={
+            <View style={themed($item)}>
+              <Text preset="bold">FCM Token</Text>
+              <Text numberOfLines={2} style={{ fontSize: 10 }}>
+                {pushToken ? `${pushToken.substring(0, 40)}...` : "No token"}
+              </Text>
+            </View>
+          }
+        />
+        {notifError && (
+          <ListItem
+            LeftComponent={
+              <View style={themed($item)}>
+                <Text preset="bold" style={{ color: "red" }}>Error</Text>
+                <Text style={{ color: "red" }}>{notifError}</Text>
+              </View>
+            }
+          />
+        )}
+      </View>
+      <View style={themed($buttonContainer)}>
+        <Button
+          style={themed($button)}
+          text={notifLoading ? "Requesting..." : "Request Permission"}
+          onPress={handleRequestPermission}
+          disabled={notifLoading || isPermissionGranted}
+        />
+        <Button
+          style={themed($button)}
+          text="Refresh Token"
+          onPress={refreshPushToken}
+          disabled={notifLoading || !isPermissionGranted}
+        />
+        <Button
+          style={themed($button)}
+          text={tokenCopied ? "Copied!" : "Copy Token"}
+          onPress={handleCopyToken}
+          disabled={!pushToken}
+        />
+      </View>
     </Screen>
   )
 }
@@ -158,6 +250,11 @@ const $container: ThemedStyle<ViewStyle> = ({ spacing }) => ({
 
 const $title: ThemedStyle<TextStyle> = ({ spacing }) => ({
   marginBottom: spacing.xxl,
+})
+
+const $sectionTitle: ThemedStyle<TextStyle> = ({ spacing }) => ({
+  marginTop: spacing.xl,
+  marginBottom: spacing.md,
 })
 
 const $reportBugsLink: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({

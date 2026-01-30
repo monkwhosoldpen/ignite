@@ -11,12 +11,13 @@ import Config from "@/config"
 import { useAuth } from "@/context/AuthContext" // @demo remove-current-line
 import { ErrorBoundary } from "@/screens/ErrorScreen/ErrorBoundary"
 import { LoginScreen } from "@/screens/LoginScreen" // @demo remove-current-line
+import { SignUpScreen } from "@/screens/SignUpScreen" // @demo remove-current-line
 import { WelcomeScreen } from "@/screens/WelcomeScreen"
 import { useAppTheme } from "@/theme/context"
 
 import { DemoNavigator } from "./DemoNavigator" // @demo remove-current-line
-import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
 import type { AppStackParamList, NavigationProps } from "./navigationTypes"
+import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
 
 /**
  * This is a list of all the route names that will exit the app if the back button
@@ -57,6 +58,7 @@ const AppStack = () => {
       ) : (
         <>
           <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="SignUp" component={SignUpScreen} />
         </>
       )}
       {/* @demo remove-block-end */}
