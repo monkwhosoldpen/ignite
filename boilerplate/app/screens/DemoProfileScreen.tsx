@@ -1,5 +1,5 @@
 import { FC, useState } from "react"
-import { Image, ImageStyle, TextStyle, View, ViewStyle, TouchableOpacity, Dimensions, Platform } from "react-native"
+import { Image, ImageStyle, TextStyle, View, ViewStyle, TouchableOpacity, useWindowDimensions, Platform } from "react-native"
 
 import { Button } from "@/components/Button"
 import { Icon } from "@/components/Icon"
@@ -22,16 +22,16 @@ const mockSidebarItems = Array.from({ length: 10 }, (_, index) => ({
   unread: index < 3, // First 3 items have unread messages
 }))
 
-const { width: screenWidth, height: screenHeight } = Dimensions.get("window")
-
-// Responsive breakpoints
-const isTablet = screenWidth >= 768
-const isDesktop = screenWidth >= 1024
-const isMobile = screenWidth < 768
-
 export const DemoProfileScreen: FC<AppStackScreenProps<"DemoProfile">> =
   function DemoProfileScreen(_props) {
     const { themed } = useAppTheme()
+    const { width: screenWidth } = useWindowDimensions()
+
+    // Responsive breakpoints
+    const isTablet = screenWidth >= 768
+    const isDesktop = screenWidth >= 1024
+    const isMobile = screenWidth < 768
+
     const [isSidebarExtended, setIsSidebarExtended] = useState(isDesktop) // Default extended on desktop
     
     // Responsive sidebar dimensions
@@ -49,7 +49,6 @@ export const DemoProfileScreen: FC<AppStackScreenProps<"DemoProfile">> =
     }
     
     const sidebarWidth = getSidebarWidth()
-    const mainContentWidth = isMobile ? screenWidth : screenWidth - sidebarWidth
     
     return (
       <View style={themed($container)}>
@@ -138,7 +137,7 @@ export const DemoProfileScreen: FC<AppStackScreenProps<"DemoProfile">> =
         <View style={[
           themed($mainContent), 
           { 
-            width: mainContentWidth,
+            flex: 1, // Use flex: 1 to fill remaining space
             ...(isMobile && { marginLeft: 0 }) // No margin on mobile
           }
         ]}>
