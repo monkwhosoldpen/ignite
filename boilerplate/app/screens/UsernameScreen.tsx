@@ -45,7 +45,6 @@ const subChats: SubChat[] = [
 export const UsernameScreen: FC<AppStackScreenProps<"Username">> =
   function UsernameScreen(_props) {
     const { themed, theme, isDark } = useAppTheme()
-    console.log("[UsernameScreen] Theme received:", { theme, isDark, hasColors: !!theme?.colors })
     const { width } = useWindowDimensions()
     const { isAuthenticated, logout } = useAuth()
     const { messages, addMessage } = useMockMessages(100)
