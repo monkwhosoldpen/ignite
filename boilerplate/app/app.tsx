@@ -86,18 +86,9 @@ export function App() {
   const [areFontsLoaded, fontLoadError] = useFonts(customFontsToLoad)
   const [isI18nInitialized, setIsI18nInitialized] = useState(false)
 
-  console.log("[App] Initialization status:", {
-    isNavigationStateRestored,
-    isI18nInitialized,
-    areFontsLoaded,
-    fontLoadError: !!fontLoadError,
-    initialNavigationState: !!initialNavigationState,
-  })
-
   useEffect(() => {
     initI18n()
       .then(() => {
-        console.log("[App] i18n initialized")
         setIsI18nInitialized(true)
       })
       .then(() => loadDateFnsLocale())
@@ -105,14 +96,12 @@ export function App() {
 
   useEffect(() => {
     if (isI18nInitialized && (areFontsLoaded || fontLoadError) && isNavigationStateRestored) {
-      console.log("[App] Hiding splash screen")
       SplashScreen.hideAsync()
     }
   }, [isI18nInitialized, areFontsLoaded, fontLoadError, isNavigationStateRestored])
 
   // Before we show the app, we have to wait for our state to be ready.
   if (!isNavigationStateRestored || !isI18nInitialized || (!areFontsLoaded && !fontLoadError)) {
-    console.log("[App] Still loading, returning null")
     return null
   }
 
