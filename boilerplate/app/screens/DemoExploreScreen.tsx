@@ -81,6 +81,18 @@ export const DemoExploreScreen: FC<AppStackScreenProps<"DemoExplore">> = (_props
 
   return (
     <Screen preset="fixed" safeAreaEdges={["top"]} contentContainerStyle={$styles.flex1}>
+      {/* Header */}
+      <View style={themed($header)}>
+        <TouchableOpacity
+          onPress={() => _props.navigation.navigate("Demo" as any)}
+          style={themed($backButton)}
+        >
+          <Icon icon="caretLeft" size={24} color="#999" />
+        </TouchableOpacity>
+        <Text preset="heading" text="Explore" style={themed($headerTitle)} />
+        <View style={themed($headerSpacer)} />
+      </View>
+      
       <FlatList<EpisodeItem>
         contentContainerStyle={themed([$styles.container, $listContentContainer])}
         data={episodesForList}
@@ -308,6 +320,35 @@ const ExploreItemCard = ({
 }
 
 // #region Styles
+
+// Header styles
+const $header: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  paddingHorizontal: spacing.md,
+  paddingVertical: spacing.sm,
+  borderBottomWidth: 1,
+  borderBottomColor: colors.palette.neutral200,
+})
+
+const $headerTitle: ThemedStyle<TextStyle> = ({ colors }) => ({
+  fontSize: 20,
+  fontWeight: 'bold',
+  color: colors.text,
+  flex: 1,
+  textAlign: 'center',
+})
+
+const $backButton: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  padding: spacing.xs,
+  borderRadius: 4,
+})
+
+const $headerSpacer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  width: spacing.xl + spacing.xs, // Same width as back button for centering
+})
+
 const $listContentContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   paddingHorizontal: spacing.lg,
   paddingTop: spacing.lg + spacing.xl,

@@ -10,12 +10,15 @@ import { DemoTabScreenProps } from "@/navigators/navigationTypes"
 import { useAppTheme } from "@/theme/context"
 import { $styles } from "@/theme/styles"
 import type { ThemedStyle } from "@/theme/types"
-import { openLinkInBrowser } from "@/utils/openLinkInBrowser"
 
-const chainReactLogo = require("@assets/images/demo/cr-logo.png")
-const reactNativeLiveLogo = require("@assets/images/demo/rnl-logo.png")
-const reactNativeNewsletterLogo = require("@assets/images/demo/rnn-logo.png")
 const reactNativeRadioLogo = require("@assets/images/demo/rnr-logo.png")
+
+// Mock data for React Native items
+const mockReactNativeItems = Array.from({ length: 20 }, (_, index) => ({
+  id: index + 1,
+  title: `React Native Update #${index + 1}`,
+  description: `Latest news and updates from the React Native ecosystem - Episode ${index + 1}`,
+}))
 
 export const DemoChatsScreen: FC<DemoTabScreenProps<"DemoChats">> =
   function DemoChatsScreen(_props) {
@@ -25,88 +28,20 @@ export const DemoChatsScreen: FC<DemoTabScreenProps<"DemoChats">> =
         <Text preset="heading" tx="demoChatsScreen:title" style={themed($title)} />
         <Text tx="demoChatsScreen:tagLine" style={themed($tagline)} />
 
-        <Text preset="subheading" tx="demoChatsScreen:joinUsOnDiscordTitle" />
-        <Text tx="demoChatsScreen:joinUsOnDiscord" style={themed($description)} />
-        <ListItem
-          tx="demoChatsScreen:joinDiscordLink"
-          leftIcon="slack"
-          rightIcon={isRTL ? "caretLeft" : "caretRight"}
-          onPress={() => _props.navigation.getParent()?.navigate("DemoProfile")}
-        />
-        <Text
-          preset="subheading"
-          tx="demoChatsScreen:makeChatsEvenBetterTitle"
-          style={themed($sectionTitle)}
-        />
-        <Text tx="demoChatsScreen:makeChatsEvenBetter" style={themed($description)} />
-        <ListItem
-          tx="demoChatsScreen:contributeToChatsLink"
-          leftIcon="github"
-          rightIcon={isRTL ? "caretLeft" : "caretRight"}
-          onPress={() => _props.navigation.getParent()?.navigate("DemoProfile")}
-        />
-
-        <Text
-          preset="subheading"
-          tx="demoChatsScreen:theLatestInReactNativeTitle"
-          style={themed($sectionTitle)}
-        />
-        <Text tx="demoChatsScreen:theLatestInReactNative" style={themed($description)} />
-        <ListItem
-          tx="demoChatsScreen:reactNativeRadioLink"
-          bottomSeparator
-          rightIcon={isRTL ? "caretLeft" : "caretRight"}
-          LeftComponent={
-            <View style={[$styles.row, themed($logoContainer)]}>
-              <Image source={reactNativeRadioLogo} style={$logo} />
-            </View>
-          }
-          onPress={() => _props.navigation.getParent()?.navigate("DemoProfile")}
-        />
-        <ListItem
-          tx="demoChatsScreen:reactNativeNewsletterLink"
-          bottomSeparator
-          rightIcon={isRTL ? "caretLeft" : "caretRight"}
-          LeftComponent={
-            <View style={[$styles.row, themed($logoContainer)]}>
-              <Image source={reactNativeNewsletterLogo} style={$logo} />
-            </View>
-          }
-          onPress={() => _props.navigation.getParent()?.navigate("DemoProfile")}
-        />
-        <ListItem
-          tx="demoChatsScreen:reactNativeLiveLink"
-          bottomSeparator
-          rightIcon={isRTL ? "caretLeft" : "caretRight"}
-          LeftComponent={
-            <View style={[$styles.row, themed($logoContainer)]}>
-              <Image source={reactNativeLiveLogo} style={$logo} />
-            </View>
-          }
-          onPress={() => _props.navigation.getParent()?.navigate("DemoProfile")}
-        />
-        <ListItem
-          tx="demoChatsScreen:chainReactConferenceLink"
-          rightIcon={isRTL ? "caretLeft" : "caretRight"}
-          LeftComponent={
-            <View style={[$styles.row, themed($logoContainer)]}>
-              <Image source={chainReactLogo} style={$logo} />
-            </View>
-          }
-          onPress={() => _props.navigation.getParent()?.navigate("DemoProfile")}
-        />
-        <Text
-          preset="subheading"
-          tx="demoChatsScreen:hireUsTitle"
-          style={themed($sectionTitle)}
-        />
-        <Text tx="demoChatsScreen:hireUs" style={themed($description)} />
-        <ListItem
-          tx="demoChatsScreen:hireUsLink"
-          leftIcon="clap"
-          rightIcon={isRTL ? "caretLeft" : "caretRight"}
-          onPress={() => _props.navigation.getParent()?.navigate("DemoProfile")}
-        />
+        {mockReactNativeItems.map((item, index) => (
+          <ListItem
+            key={item.id}
+            text={item.title}
+            bottomSeparator={index < mockReactNativeItems.length - 1}
+            rightIcon={isRTL ? "caretLeft" : "caretRight"}
+            LeftComponent={
+              <View style={[$styles.row, themed($logoContainer)]}>
+                <Image source={reactNativeRadioLogo} style={$logo} />
+              </View>
+            }
+            onPress={() => _props.navigation.getParent()?.navigate("DemoProfile")}
+          />
+        ))}
         
         <View style={themed($buttonContainer)}>
           <Button

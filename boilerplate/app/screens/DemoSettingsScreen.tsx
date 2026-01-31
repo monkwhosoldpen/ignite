@@ -113,73 +113,41 @@ export const DemoSettingsScreen: FC<DemoTabScreenProps<"DemoSettings">> = functi
       />
 
       <Text style={themed($title)} preset="heading" tx="demoSettingsScreen:title" />
-      <Text preset="bold">Current system theme: {colorScheme}</Text>
-      <Text preset="bold">Current app theme: {themeContext}</Text>
       <Button onPress={resetTheme} text={`Reset`} />
 
       <View style={themed($itemsContainer)}>
         <Button onPress={toggleTheme} text={`Toggle Theme: ${themeContext}`} />
       </View>
-      <View style={themed($itemsContainer)}>
-        <ListItem
-          LeftComponent={
-            <View style={themed($item)}>
-              <Text preset="bold">App Id</Text>
-              <Text>{Application.applicationId}</Text>
-            </View>
-          }
-        />
-        <ListItem
-          LeftComponent={
-            <View style={themed($item)}>
-              <Text preset="bold">App Name</Text>
-              <Text>{Application.applicationName}</Text>
-            </View>
-          }
-        />
-        <ListItem
-          LeftComponent={
-            <View style={themed($item)}>
-              <Text preset="bold">App Version</Text>
-              <Text>{Application.nativeApplicationVersion}</Text>
-            </View>
-          }
-        />
-        <ListItem
-          LeftComponent={
-            <View style={themed($item)}>
-              <Text preset="bold">App Build Version</Text>
-              <Text>{Application.nativeBuildVersion}</Text>
-            </View>
-          }
-        />
-        <ListItem
-          LeftComponent={
-            <View style={themed($item)}>
-              <Text preset="bold">Hermes Enabled</Text>
-              <Text>{String(usingHermes)}</Text>
-            </View>
-          }
-        />
-        <ListItem
-          LeftComponent={
-            <View style={themed($item)}>
-              <Text preset="bold">Fabric Enabled</Text>
-              <Text>{String(usingFabric)}</Text>
-            </View>
-          }
-        />
-      </View>
-      <View style={themed($buttonContainer)}>
-        <Button style={themed($button)} tx="demoSettingsScreen:reactotron" onPress={demoReactotron} />
-        <Text style={themed($hint)} tx={`demoSettingsScreen:${Platform.OS}ReactotronHint` as const} />
-      </View>
+
       <View style={themed($buttonContainer)}>
         <Button style={themed($button)} tx="common:logOut" onPress={logout} />
+        <Text style={themed($hint)} tx={`demoSettingsScreen:${Platform.OS}ReactotronHint` as const} />
       </View>
 
       {/* Notification Debug Section */}
       <Text style={themed($sectionTitle)} preset="heading" text="Push Notifications" />
+
+      <View style={themed($buttonContainer)}>
+        <Button
+          style={themed($button)}
+          text={notifLoading ? "Requesting..." : "Request Permission"}
+          onPress={handleRequestPermission}
+          disabled={notifLoading || isPermissionGranted}
+        />
+        <Button
+          style={themed($button)}
+          text="Refresh Token"
+          onPress={refreshPushToken}
+          disabled={notifLoading || !isPermissionGranted}
+        />
+        <Button
+          style={themed($button)}
+          text={tokenCopied ? "Copied!" : "Copy Token"}
+          onPress={handleCopyToken}
+          disabled={!pushToken}
+        />
+      </View>
+
       <View style={themed($itemsContainer)}>
         <ListItem
           LeftComponent={
@@ -219,26 +187,6 @@ export const DemoSettingsScreen: FC<DemoTabScreenProps<"DemoSettings">> = functi
             }
           />
         )}
-      </View>
-      <View style={themed($buttonContainer)}>
-        <Button
-          style={themed($button)}
-          text={notifLoading ? "Requesting..." : "Request Permission"}
-          onPress={handleRequestPermission}
-          disabled={notifLoading || isPermissionGranted}
-        />
-        <Button
-          style={themed($button)}
-          text="Refresh Token"
-          onPress={refreshPushToken}
-          disabled={notifLoading || !isPermissionGranted}
-        />
-        <Button
-          style={themed($button)}
-          text={tokenCopied ? "Copied!" : "Copy Token"}
-          onPress={handleCopyToken}
-          disabled={!pushToken}
-        />
       </View>
     </Screen>
   )
