@@ -5,12 +5,32 @@
 
 import { Platform } from "react-native"
 
-// No custom fonts to load - using system fonts for speed
-export const customFontsToLoad = {}
+import {
+  SpaceGrotesk_300Light as spaceGroteskLight,
+  SpaceGrotesk_400Regular as spaceGroteskRegular,
+  SpaceGrotesk_500Medium as spaceGroteskMedium,
+  SpaceGrotesk_600SemiBold as spaceGroteskSemiBold,
+  SpaceGrotesk_700Bold as spaceGroteskBold,
+} from "@expo-google-fonts/space-grotesk"
+
+export const customFontsToLoad = {
+  spaceGroteskLight,
+  spaceGroteskRegular,
+  spaceGroteskMedium,
+  spaceGroteskSemiBold,
+  spaceGroteskBold,
+}
 
 const fonts = {
-  // System fonts - what Twitter actually uses
-  // SF Pro on iOS, Roboto on Android
+  spaceGrotesk: {
+    // Brand fonts
+    light: "spaceGroteskLight",
+    normal: "spaceGroteskRegular",
+    medium: "spaceGroteskMedium",
+    semiBold: "spaceGroteskSemiBold",
+    bold: "spaceGroteskBold",
+  },
+  // System fonts
   system: {
     light: Platform.select({
       ios: "System",
@@ -62,13 +82,13 @@ const fonts = {
 export const typography = {
   fonts,
   /**
-   * Primary font - system fonts for native feel
+   * Primary font - Space Grotesk for brand identity
    */
-  primary: fonts.system,
+  primary: fonts.spaceGrotesk,
   /**
-   * Secondary font for variety
+   * Secondary font - System for native feel where appropriate
    */
-  secondary: Platform.select({ ios: fonts.helveticaNeue, android: fonts.sansSerif }),
+  secondary: fonts.system,
   /**
    * Monospace for code
    */
@@ -76,26 +96,26 @@ export const typography = {
 }
 
 /**
- * Font sizes - Twitter-like scale
+ * Font sizes - Enhanced scale
  */
 export const fontSize = {
-  xxs: 11,
-  xs: 12,
+  xxs: 12,
+  xs: 13,
   sm: 14,
-  md: 15,   // Twitter's base size
-  lg: 17,
-  xl: 20,
-  xxl: 24,
-  xxxl: 32,
+  md: 16,   // Increased base size
+  lg: 18,
+  xl: 22,
+  xxl: 28,
+  xxxl: 36,
 } as const
 
 /**
- * Line heights
+ * Line heights - Systematic application
  */
 export const lineHeight = {
-  tight: 1.2,
-  normal: 1.4,
-  relaxed: 1.6,
+  tight: 1.25,
+  normal: 1.5,
+  relaxed: 1.75,
 } as const
 
 /**

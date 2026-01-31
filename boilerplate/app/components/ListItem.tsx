@@ -1,12 +1,15 @@
 import { forwardRef, ReactElement } from "react"
 import {
+  Animated as RNAnimated,
+  Pressable,
+  PressableProps,
   StyleProp,
   TextStyle,
-  TouchableOpacity,
-  TouchableOpacityProps,
   View,
   ViewStyle,
 } from "react-native"
+import { Swipeable } from "react-native-gesture-handler"
+import Animated, { useAnimatedStyle, withSpring, useSharedValue, FadeInUp, FadeOut } from "react-native-reanimated"
 
 import { useAppTheme } from "@/theme/context"
 import { $styles } from "@/theme/styles"
@@ -14,8 +17,10 @@ import type { ThemedStyle } from "@/theme/types"
 
 import { Icon, IconTypes } from "./Icon"
 import { Text, TextProps } from "./Text"
+import * as Haptics from "expo-haptics"
+import { translate } from "@/i18n"
 
-export interface ListItemProps extends TouchableOpacityProps {
+export interface ListItemProps extends PressableProps {
   /**
    * How tall the list item should be.
    * Default: 56
@@ -61,7 +66,7 @@ export interface ListItemProps extends TouchableOpacityProps {
    */
   containerStyle?: StyleProp<ViewStyle>
   /**
-   * Optional TouchableOpacity style override.
+   * Optional Pressable style override.
    */
   style?: StyleProp<ViewStyle>
   /**
@@ -90,6 +95,34 @@ export interface ListItemProps extends TouchableOpacityProps {
    * Overrides `leftIcon`.
    */
   LeftComponent?: ReactElement
+  /**
+   * Custom entering animation.
+   */
+  entering?: any
+  /**
+   * Custom exiting animation.
+   */
+  exiting?: any
+  /**
+   * Render right swipe actions.
+   */
+  renderRightActions?: (
+    progressAnimatedValue: RNAnimated.AnimatedInterpolation<number>,
+    dragAnimatedValue: RNAnimated.AnimatedInterpolation<number>,
+    swipeable: Swipeable,
+  ) => ReactElement
+  /**
+   * Render left swipe actions.
+   */
+  renderLeftActions?: (
+    progressAnimatedValue: RNAnimated.AnimatedInterpolation<number>,
+    dragAnimatedValue: RNAnimated.AnimatedInterpolation<number>,
+    swipeable: Swipeable,
+  ) => ReactElement
+  /**
+   * Swipeable props.
+   */
+  SwipeableProps?: any
 }
 
 interface ListItemActionProps {
@@ -99,6 +132,8 @@ interface ListItemActionProps {
   size: number
   side: "left" | "right"
 }
+
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable)
 
 /**
  * A styled row component that can be used in FlatList, SectionList, or by itself.
@@ -113,7 +148,7 @@ export const ListItem = forwardRef<View, ListItemProps>(function ListItem(
   const {
     bottomSeparator,
     children,
-    height = 56,
+    height,
     LeftComponent,
     leftIcon,
     leftIconColor,
@@ -128,15 +163,25 @@ export const ListItem = forwardRef<View, ListItemProps>(function ListItem(
     txOptions,
     textStyle: $textStyleOverride,
     containerStyle: $containerStyleOverride,
-    ...TouchableOpacityProps
+    onPress,
+    entering = FadeInUp.duration(300),
+    exiting = FadeOut.duration(200),
+    renderRightActions,
+    renderLeftActions,
+    SwipeableProps,
+    ...rest
   } = props
-  const { themed } = useAppTheme()
+  const { themed, reducedMotion } = useAppTheme()
 
-  const isTouchable =
-    TouchableOpacityProps.onPress !== undefined ||
-    TouchableOpacityProps.onPressIn !== undefined ||
-    TouchableOpacityProps.onPressOut !== undefined ||
-    TouchableOpacityProps.onLongPress !== undefined
+  const isTouchable = !!onPress || !!props.onLongPress
+
+  const pressedValue = useSharedValue(0)
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ scale: withSpring(pressedValue.value === 1 ? 0.98 : 1, { damping: 10, stiffness: 200 }) }],
+    }
+  })
 
   const $textStyles = [$textStyle, $textStyleOverride, TextProps?.style]
 
@@ -146,36 +191,71 @@ export const ListItem = forwardRef<View, ListItemProps>(function ListItem(
     $containerStyleOverride,
   ]
 
-  const $touchableStyles = [$styles.row, $touchableStyle, { minHeight: height }, style]
+  const $touchableStyles = (state: { pressed: boolean }) => {
+    if (state.pressed) pressedValue.value = 1
+    else pressedValue.value = 0
+    return [$styles.row, $touchableStyle, height ? { minHeight: height } : { paddingVertical: 12 }, style, animatedStyle]
+  }
 
-  const Wrapper = isTouchable ? TouchableOpacity : View
+  const handlePress = (e: any) => {
+    if (isTouchable && Haptics.selectionAsync) {
+      Haptics.selectionAsync()
+    }
+    onPress?.(e)
+  }
+
+  const listContent = (
+    <AnimatedPressable
+      accessibilityRole={isTouchable ? "button" : undefined}
+      accessibilityLabel={text || (tx ? translate(tx, txOptions) : undefined)}
+      {...rest}
+      onPress={handlePress}
+      style={$touchableStyles}
+    >
+      <ListItemAction
+        side="left"
+        size={height || 44}
+        icon={leftIcon}
+        iconColor={leftIconColor}
+        Component={LeftComponent}
+      />
+
+      <Text {...TextProps} tx={tx} text={text} txOptions={txOptions} style={themed($textStyles)}>
+        {children}
+      </Text>
+
+      <ListItemAction
+        side="right"
+        size={height || 44}
+        icon={rightIcon}
+        iconColor={rightIconColor}
+        Component={RightComponent}
+      />
+    </AnimatedPressable>
+  )
 
   return (
-    <View ref={ref} style={themed($containerStyles)}>
-      <Wrapper {...TouchableOpacityProps} style={$touchableStyles}>
-        <ListItemAction
-          side="left"
-          size={height}
-          icon={leftIcon}
-          iconColor={leftIconColor}
-          Component={LeftComponent}
-        />
-
-        <Text {...TextProps} tx={tx} text={text} txOptions={txOptions} style={themed($textStyles)}>
-          {children}
-        </Text>
-
-        <ListItemAction
-          side="right"
-          size={height}
-          icon={rightIcon}
-          iconColor={rightIconColor}
-          Component={RightComponent}
-        />
-      </Wrapper>
-    </View>
+    <Animated.View 
+      ref={ref} 
+      style={themed($containerStyles)}
+      entering={reducedMotion ? undefined : entering}
+      exiting={reducedMotion ? undefined : exiting}
+    >
+      {renderRightActions || renderLeftActions ? (
+        <Swipeable
+          renderRightActions={renderRightActions}
+          renderLeftActions={renderLeftActions}
+          {...SwipeableProps}
+        >
+          {listContent}
+        </Swipeable>
+      ) : (
+        listContent
+      )}
+    </Animated.View>
   )
 })
+
 
 /**
  * @param {ListItemActionProps} props - The props for the `ListItemAction` component.

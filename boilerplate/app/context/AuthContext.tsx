@@ -47,7 +47,6 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({ childre
         setSession(currentSession)
         setUser(currentSession?.user ?? null)
       } catch (error) {
-        console.error("Failed to get session:", error)
       } finally {
         setIsLoading(false)
       }
@@ -67,32 +66,24 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({ childre
   }, [])
 
   const signIn = useCallback(async (email: string, password: string): Promise<AuthResult> => {
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
 
     if (error) {
       return { success: false, error }
     }
 
-    setSession(data.session)
-    setUser(data.user)
     return { success: true }
   }, [])
 
   const signUp = useCallback(async (email: string, password: string): Promise<AuthResult> => {
     // Sign up with auto-confirm (instant access, no email confirmation)
-    const { data, error } = await supabase.auth.signUp({
+    const { error } = await supabase.auth.signUp({
       email,
       password,
     })
 
     if (error) {
       return { success: false, error }
-    }
-
-    // If session exists, user is logged in immediately
-    if (data.session) {
-      setSession(data.session)
-      setUser(data.user)
     }
 
     return { success: true }

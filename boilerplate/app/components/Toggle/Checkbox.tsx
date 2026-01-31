@@ -1,5 +1,11 @@
-import { useEffect, useRef, useCallback } from "react"
-import { Image, ImageStyle, Animated, StyleProp, View, ViewStyle } from "react-native"
+import { useEffect, useCallback } from "react"
+import { Image, ImageStyle, StyleProp, View, ViewStyle } from "react-native"
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+  withTiming,
+} from "react-native-reanimated"
 
 import { useAppTheme } from "@/theme/context"
 import { $styles } from "@/theme/styles"
@@ -44,53 +50,67 @@ function CheckboxInput(props: CheckboxInputProps) {
     outerStyle: $outerStyleOverride,
     innerStyle: $innerStyleOverride,
     detailStyle: $detailStyleOverride,
+    pressed,
   } = props
 
   const {
     theme: { colors },
   } = useAppTheme()
 
-  const opacity = useRef(new Animated.Value(0))
+  const progress = useSharedValue(on ? 1 : 0)
 
   useEffect(() => {
-    Animated.timing(opacity.current, {
-      toValue: on ? 1 : 0,
-      duration: 300,
-      useNativeDriver: true,
-    }).start()
-  }, [on])
+    progress.value = withSpring(on ? 1 : 0, {
+      damping: 15,
+      stiffness: 150,
+    })
+  }, [on, progress])
+
+  const animatedInnerStyle = useAnimatedStyle(() => {
+    return {
+      opacity: progress.value,
+    }
+  })
+
+  const animatedOuterStyle = useAnimatedStyle(() => {
+    const scale = withTiming(pressed ? 0.95 : 1, { duration: 100 })
+    return {
+      transform: [{ scale }],
+    }
+  })
 
   const offBackgroundColor = [
     disabled && colors.palette.neutral400,
     status === "error" && colors.errorBackground,
     colors.palette.neutral200,
-  ].filter(Boolean)[0]
+  ].filter(Boolean)[0] as string
 
   const outerBorderColor = [
     disabled && colors.palette.neutral400,
     status === "error" && colors.error,
     !on && colors.palette.neutral800,
     colors.palette.secondary500,
-  ].filter(Boolean)[0]
+  ].filter(Boolean)[0] as string
 
   const onBackgroundColor = [
     disabled && colors.transparent,
     status === "error" && colors.errorBackground,
     colors.palette.secondary500,
-  ].filter(Boolean)[0]
+  ].filter(Boolean)[0] as string
 
   const iconTintColor = [
     disabled && colors.palette.neutral600,
     status === "error" && colors.error,
     colors.palette.accent100,
-  ].filter(Boolean)[0]
+  ].filter(Boolean)[0] as string
 
   return (
-    <View
+    <Animated.View
       style={[
         $inputOuter,
         { backgroundColor: offBackgroundColor, borderColor: outerBorderColor },
         $outerStyleOverride,
+        animatedOuterStyle,
       ]}
     >
       <Animated.View
@@ -98,7 +118,7 @@ function CheckboxInput(props: CheckboxInputProps) {
           $styles.toggleInner,
           { backgroundColor: onBackgroundColor },
           $innerStyleOverride,
-          { opacity: opacity.current },
+          animatedInnerStyle,
         ]}
       >
         <Image
@@ -110,7 +130,7 @@ function CheckboxInput(props: CheckboxInputProps) {
           ]}
         />
       </Animated.View>
-    </View>
+    </Animated.View>
   )
 }
 
@@ -120,4 +140,4 @@ const $checkboxDetail: ImageStyle = {
   resizeMode: "contain",
 }
 
-const $inputOuter: StyleProp<ViewStyle> = [$inputOuterBase, { borderRadius: 4 }]
+const $inputOuter: StyleProp<ViewStyle> = [$inputOuterBase, { borderRadius: 8 }]

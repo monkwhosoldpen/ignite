@@ -7,9 +7,9 @@ import { Text } from "@/components/Text"
 import { translate } from "@/i18n/translate"
 import type { ThemedStyle } from "@/theme/types"
 
-import { DemoDivider } from "../DemoDivider"
+import { DemoDivider } from "../Divider"
 import { Demo } from "./types"
-import { DemoUseCase } from "../DemoUseCase"
+import { DemoUseCase } from "../UseCase"
 
 const $iconStyle: ImageStyle = { width: 30, height: 30 }
 const $customButtonStyle: ThemedStyle<ViewStyle> = ({ colors }) => ({

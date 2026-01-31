@@ -2,12 +2,13 @@ import { ComponentType, FC, useMemo } from "react"
 import {
   GestureResponderEvent,
   ImageStyle,
+  Pressable,
+  PressableProps,
+  PressableStateCallbackType,
   StyleProp,
   SwitchProps,
   TextInputProps,
   TextStyle,
-  TouchableOpacity,
-  TouchableOpacityProps,
   View,
   ViewProps,
   ViewStyle,
@@ -18,8 +19,9 @@ import { $styles } from "@/theme/styles"
 import type { ThemedStyle } from "@/theme/types"
 
 import { Text, TextProps } from "../Text"
+import * as Haptics from "expo-haptics"
 
-export interface ToggleProps<T> extends Omit<TouchableOpacityProps, "style"> {
+export interface ToggleProps<T> extends Omit<PressableProps, "style" | "children"> {
   /**
    * A style modifier for different input states.
    */
@@ -115,6 +117,7 @@ export interface BaseToggleInputProps<T> {
   outerStyle: ViewStyle
   innerStyle: ViewStyle
   detailStyle: ViewStyle | ImageStyle
+  pressed: boolean
 }
 
 /**
@@ -150,7 +153,7 @@ export function Toggle<T>(props: ToggleProps<T>) {
   const disabled = editable === false || status === "disabled" || props.disabled
 
   const Wrapper = useMemo(
-    () => (disabled ? View : TouchableOpacity) as ComponentType<TouchableOpacityProps | ViewProps>,
+    () => (disabled ? View : Pressable) as ComponentType<PressableProps | ViewProps>,
     [disabled],
   )
 
@@ -167,44 +170,62 @@ export function Toggle<T>(props: ToggleProps<T>) {
    */
   function handlePress(e: GestureResponderEvent) {
     if (disabled) return
+
+    if (Haptics.impactAsync) {
+      if (!value) {
+        // Turning ON
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Rigid)
+      } else {
+        // Turning OFF
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft)
+      }
+    }
+
     onValueChange?.(!value)
     onPress?.(e)
   }
 
   return (
     <Wrapper
-      activeOpacity={1}
       accessibilityRole={accessibilityRole}
-      accessibilityState={{ checked: value, disabled }}
+      accessibilityState={{ checked: value, disabled: !!disabled }}
       {...WrapperProps}
       style={$containerStyles}
       onPress={handlePress}
     >
-      <View style={$inputWrapperStyles}>
-        {labelPosition === "left" && <FieldLabel<T> {...props} labelPosition={labelPosition} />}
+      {(state: PressableStateCallbackType) => {
+        const pressed = "pressed" in state ? state.pressed : false
+        return (
+          <>
+            <View style={$inputWrapperStyles}>
+              {labelPosition === "left" && <FieldLabel<T> {...props} labelPosition={labelPosition} />}
 
-        <ToggleInput
-          on={!!value}
-          disabled={!!disabled}
-          status={status}
-          outerStyle={props.inputOuterStyle ?? {}}
-          innerStyle={props.inputInnerStyle ?? {}}
-          detailStyle={props.inputDetailStyle ?? {}}
-        />
+              <ToggleInput
+                on={!!value}
+                disabled={!!disabled}
+                status={status}
+                outerStyle={props.inputOuterStyle ?? {}}
+                innerStyle={props.inputInnerStyle ?? {}}
+                detailStyle={props.inputDetailStyle ?? {}}
+                pressed={pressed}
+              />
 
-        {labelPosition === "right" && <FieldLabel<T> {...props} labelPosition={labelPosition} />}
-      </View>
+              {labelPosition === "right" && <FieldLabel<T> {...props} labelPosition={labelPosition} />}
+            </View>
 
-      {!!(helper || helperTx) && (
-        <Text
-          preset="formHelper"
-          text={helper}
-          tx={helperTx}
-          txOptions={helperTxOptions}
-          {...HelperTextProps}
-          style={$helperStyles}
-        />
-      )}
+            {!!(helper || helperTx) && (
+              <Text
+                preset="formHelper"
+                text={helper}
+                tx={helperTx}
+                txOptions={helperTxOptions}
+                {...HelperTextProps}
+                style={$helperStyles}
+              />
+            )}
+          </>
+        )
+      }}
     </Wrapper>
   )
 }
@@ -254,12 +275,14 @@ function FieldLabel<T>(props: ToggleProps<T>) {
 
 const $inputWrapper: ViewStyle = {
   alignItems: "center",
+  minHeight: 44,
 }
 
 export const $inputOuterBase: ViewStyle = {
   height: 24,
   width: 24,
   borderWidth: 2,
+  borderRadius: 12,
   alignItems: "center",
   overflow: "hidden",
   flexGrow: 0,

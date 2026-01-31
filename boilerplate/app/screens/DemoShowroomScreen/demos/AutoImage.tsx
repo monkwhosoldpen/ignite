@@ -7,9 +7,9 @@ import { translate } from "@/i18n/translate"
 import { $styles } from "@/theme/styles"
 import type { ThemedStyle } from "@/theme/types"
 
-import { DemoDivider } from "../DemoDivider"
+import { DemoDivider } from "../Divider"
 import { Demo } from "./types"
-import { DemoUseCase } from "../DemoUseCase"
+import { DemoUseCase } from "../UseCase"
 
 const $imageContainer: ViewStyle = {
   alignItems: "center",

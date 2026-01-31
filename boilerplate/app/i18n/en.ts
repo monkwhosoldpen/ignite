@@ -6,13 +6,13 @@ const en = {
     cancel: "Cancel",
     back: "Back",
     logOut: "Log Out", // @demo remove-current-line
+    close: "Close",
   },
   welcomeScreen: {
-    postscript:
-      "psst  — This probably isn't what your app looks like. (Unless your designer handed you these screens, and in that case, ship it!)",
-    readyForLaunch: "Your app, almost ready for launch!",
-    exciting: "(ohh, this is exciting!)",
-    letsGo: "Let's go!", // @demo remove-current-line
+    readyForLaunch: "Modern Mobile Experience",
+    exciting: "Built for performance, styled for brand excellence.",
+    postscript: "The ultimate foundation for your next mission-critical application.",
+    letsGo: "Get Started", // @demo remove-current-line
   },
   errorScreen: {
     title: "Something went wrong!",
@@ -124,13 +124,15 @@ const en = {
     iosReactotronHint:
       "If this doesn't work, ensure the Reactotron desktop app is running and reload app.",
     androidReactotronHint:
-      "If this doesn't work, ensure the Reactotron desktop app is running, run adb reverse tcp:9090 tcp:9090 from your terminal, and reload the app.",
+      "If this doesn't work, ensure the Reactotron desktop app is running, run adb reverse tcp:9090 tcp:9090 from your terminal, and reload app.",
     macosReactotronHint:
       "If this doesn't work, ensure the Reactotron desktop app is running and reload app.",
     webReactotronHint:
       "If this doesn't work, ensure the Reactotron desktop app is running and reload app.",
     windowsReactotronHint:
       "If this doesn't work, ensure the Reactotron desktop app is running and reload app.",
+    language: "Language",
+    languageDescription: "Change app language",
   },
   demoUsernameScreen: {
     signedInTitle: "Welcome Back!",
@@ -195,6 +197,11 @@ const en = {
       content:
         "No favorites have been added yet. Tap the heart on an episode to add it to your favorites!",
     },
+  },
+  languageSelector: {
+    title: "Select Language",
+    subtitle: "Choose your preferred language for the app",
+    changing: "Changing language...",
   },
   // @demo remove-block-start
   ...demoEn,

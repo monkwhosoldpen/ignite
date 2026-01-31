@@ -1,4 +1,4 @@
-import { ComponentType, forwardRef, Ref, useImperativeHandle, useRef } from "react"
+import { ComponentType, forwardRef, Ref, useImperativeHandle, useRef, useState, useEffect } from "react"
 import {
   ImageStyle,
   StyleProp,
@@ -6,10 +6,18 @@ import {
   TextInput,
   TextInputProps,
   TextStyle,
-  TouchableOpacity,
   View,
   ViewStyle,
 } from "react-native"
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+  withTiming,
+  withSequence,
+  withRepeat,
+  interpolateColor,
+} from "react-native-reanimated"
 
 import { isRTL } from "@/i18n"
 import { translate } from "@/i18n/translate"
@@ -132,11 +140,46 @@ export const TextField = forwardRef(function TextField(props: TextFieldProps, re
     ...TextInputProps
   } = props
   const input = useRef<TextInput>(null)
+  const [isFocused, setIsFocused] = useState(false)
 
   const {
     themed,
     theme: { colors },
   } = useAppTheme()
+
+  const focusProgress = useSharedValue(0)
+  const shakeOffset = useSharedValue(0)
+
+  useEffect(() => {
+    focusProgress.value = withTiming(isFocused ? 1 : 0, { duration: 200 })
+  }, [isFocused, focusProgress])
+
+  useEffect(() => {
+    if (status === "error") {
+      shakeOffset.value = withSequence(
+        withTiming(-10, { duration: 50 }),
+        withRepeat(withTiming(10, { duration: 100 }), 3, true),
+        withTiming(0, { duration: 50 }),
+      )
+    }
+  }, [status, shakeOffset])
+
+  const animatedWrapperStyle = useAnimatedStyle(() => {
+    const borderColor = interpolateColor(
+      focusProgress.value,
+      [0, 1],
+      [
+        status === "error" ? colors.error : colors.palette.neutral400,
+        status === "error" ? colors.error : colors.tint,
+      ]
+    )
+
+    return {
+      borderColor,
+      borderWidth: withSpring(isFocused ? 2 : 1),
+      transform: [{ translateX: shakeOffset.value }],
+    }
+  })
 
   const disabled = TextInputProps.editable === false || status === "disabled"
 
@@ -151,7 +194,6 @@ export const TextField = forwardRef(function TextField(props: TextFieldProps, re
   const $inputWrapperStyles = [
     $styles.row,
     $inputWrapperStyle,
-    status === "error" && { borderColor: colors.error },
     TextInputProps.multiline && { minHeight: 112 },
     LeftAccessory && { paddingStart: 0 },
     RightAccessory && { paddingEnd: 0 },
@@ -184,10 +226,8 @@ export const TextField = forwardRef(function TextField(props: TextFieldProps, re
   useImperativeHandle(ref, () => input.current as TextInput)
 
   return (
-    <TouchableOpacity
-      activeOpacity={1}
+    <View
       style={$containerStyles}
-      onPress={focusInput}
       accessibilityState={{ disabled }}
     >
       {!!(label || labelTx) && (
@@ -198,10 +238,11 @@ export const TextField = forwardRef(function TextField(props: TextFieldProps, re
           txOptions={labelTxOptions}
           {...LabelTextProps}
           style={themed($labelStyles)}
+          onPress={focusInput}
         />
       )}
 
-      <View style={themed($inputWrapperStyles)}>
+      <Animated.View style={[themed($inputWrapperStyles), animatedWrapperStyle]}>
         {!!LeftAccessory && (
           <LeftAccessory
             style={themed($leftAccessoryStyle)}
@@ -217,9 +258,18 @@ export const TextField = forwardRef(function TextField(props: TextFieldProps, re
           textAlignVertical="top"
           placeholder={placeholderContent}
           placeholderTextColor={colors.textDim}
+          accessibilityLabel={label || (labelTx ? translate(labelTx, labelTxOptions) : placeholderContent)}
           {...TextInputProps}
           editable={!disabled}
           style={themed($inputStyles)}
+          onFocus={(e) => {
+            setIsFocused(true)
+            TextInputProps.onFocus?.(e)
+          }}
+          onBlur={(e) => {
+            setIsFocused(false)
+            TextInputProps.onBlur?.(e)
+          }}
         />
 
         {!!RightAccessory && (
@@ -230,7 +280,7 @@ export const TextField = forwardRef(function TextField(props: TextFieldProps, re
             multiline={TextInputProps.multiline ?? false}
           />
         )}
-      </View>
+      </Animated.View>
 
       {!!(helper || helperTx) && (
         <Text
@@ -242,7 +292,7 @@ export const TextField = forwardRef(function TextField(props: TextFieldProps, re
           style={themed($helperStyles)}
         />
       )}
-    </TouchableOpacity>
+    </View>
   )
 })
 
@@ -253,7 +303,7 @@ const $labelStyle: ThemedStyle<TextStyle> = ({ spacing }) => ({
 const $inputWrapperStyle: ThemedStyle<ViewStyle> = ({ colors }) => ({
   alignItems: "flex-start",
   borderWidth: 1,
-  borderRadius: 4,
+  borderRadius: 12,
   backgroundColor: colors.palette.neutral200,
   borderColor: colors.palette.neutral400,
   overflow: "hidden",

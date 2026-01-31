@@ -1,4 +1,13 @@
+import { useEffect } from "react"
 import { Image, ImageProps, ImageStyle, StyleProp, TextStyle, View, ViewStyle } from "react-native"
+import Animated, { 
+  useSharedValue, 
+  useAnimatedStyle, 
+  withRepeat, 
+  withSequence, 
+  withTiming,
+  withDelay
+} from "react-native-reanimated"
 
 import { translate } from "@/i18n/translate"
 import { useAppTheme } from "@/theme/context"
@@ -10,6 +19,7 @@ import { Text, TextProps } from "./Text"
 const sadFace = require("@assets/images/sad-face.png")
 
 interface EmptyStateProps {
+// ... same as before ...
   /**
    * An optional prop that specifies the text/image set to use for the empty state.
    */
@@ -163,6 +173,40 @@ export function EmptyState(props: EmptyStateProps) {
   const isContentPresent = !!(content || contentTx)
   const isButtonPresent = !!(button || buttonTx)
 
+  const imageOffset = useSharedValue(0)
+  const buttonScale = useSharedValue(1)
+
+  useEffect(() => {
+    imageOffset.value = withRepeat(
+      withSequence(
+        withTiming(-10, { duration: 1500 }),
+        withTiming(0, { duration: 1500 })
+      ),
+      -1,
+      true
+    )
+
+    buttonScale.value = withDelay(
+      1000,
+      withRepeat(
+        withSequence(
+          withTiming(1.05, { duration: 800 }),
+          withTiming(1, { duration: 800 })
+        ),
+        -1,
+        true
+      )
+    )
+  }, [imageOffset, buttonScale])
+
+  const animatedImageStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: imageOffset.value }],
+  }))
+
+  const animatedButtonStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: buttonScale.value }],
+  }))
+
   const $containerStyles = [$containerStyleOverride]
   const $imageStyles = [
     $image,
@@ -193,10 +237,10 @@ export function EmptyState(props: EmptyStateProps) {
   return (
     <View style={$containerStyles}>
       {isImagePresent && (
-        <Image
+        <Animated.Image
           source={imageSource}
           {...ImageProps}
-          style={$imageStyles}
+          style={[$imageStyles, animatedImageStyle]}
           tintColor={theme.colors.palette.neutral900}
         />
       )}
@@ -223,19 +267,22 @@ export function EmptyState(props: EmptyStateProps) {
       )}
 
       {isButtonPresent && (
-        <Button
-          onPress={buttonOnPress}
-          text={button}
-          tx={buttonTx}
-          txOptions={buttonTxOptions}
-          textStyle={$buttonTextStyleOverride}
-          {...ButtonProps}
-          style={$buttonStyles}
-        />
+        <Animated.View style={animatedButtonStyle}>
+          <Button
+            onPress={buttonOnPress}
+            text={button}
+            tx={buttonTx}
+            txOptions={buttonTxOptions}
+            textStyle={$buttonTextStyleOverride}
+            {...ButtonProps}
+            style={$buttonStyles}
+          />
+        </Animated.View>
       )}
     </View>
   )
 }
+
 
 const $image: ImageStyle = { alignSelf: "center" }
 const $heading: ThemedStyle<TextStyle> = ({ spacing }) => ({

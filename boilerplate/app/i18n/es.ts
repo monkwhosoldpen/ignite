@@ -7,6 +7,7 @@ const es: Translations = {
     cancel: "Cancelar",
     back: "Volver",
     logOut: "Cerrar sesión", // @demo remove-current-line
+    close: "Cerrar",
   },
   welcomeScreen: {
     postscript:
@@ -50,6 +51,9 @@ const es: Translations = {
     debugTab: "Debug",
     communityTab: "Comunidad",
     chatsTab: "Chats",
+    exploreTab: "Explorar",
+    settingsTab: "Configuración",
+    usernameTab: "Nombre de usuario",
     podcastListTab: "Podcasts",
   },
   demoCommunityScreen: {
@@ -147,6 +151,56 @@ const es: Translations = {
       content:
         "No se han agregado episodios favoritos todavía. ¡Presiona el corazón dentro de un episodio para agregarlo a tus favoritos!",
     },
+  },
+  demoExploreScreen: {
+    title: "Explorar",
+    tagLine: "Descubre contenido y recursos increíbles seleccionados para ti.",
+    onlyFavorites: "Solo favoritos",
+    noFavoritesEmptyState: {
+      heading: "No hay elementos favoritos todavía",
+      content: "Comienza a explorar y marca tus elementos favoritos para verlos aquí.",
+    },
+    favoriteButton: "Favorito",
+    unfavoriteButton: "No favorito",
+    accessibility: {
+      switch: "Alternar solo favoritos",
+      cardHint: "Toca dos veces para {{action}} este elemento",
+      favoriteAction: "Favorito",
+      favoriteIcon: "Favorito",
+      unfavoriteIcon: "No favorito",
+    },
+  },
+  demoSettingsScreen: {
+    title: "Configuración",
+    reportBugs: "Reportar errores",
+    reactotron: "Enviar a Reactotron",
+    iosReactotronHint: "Si esto no funciona, asegúrate de que la aplicación de escritorio Reactotron se esté ejecutando y recarga la aplicación.",
+    androidReactotronHint: "Si esto no funciona, asegúrate de que la aplicación de escritorio Reactotron se esté ejecutando, ejecuta adb reverse tcp:9090 tcp:9090 desde tu terminal y recarga la aplicación.",
+    macosReactotronHint: "Si esto no funciona, asegúrate de que la aplicación de escritorio Reactotron se esté ejecutando y recarga la aplicación.",
+    webReactotronHint: "Si esto no funciona, asegúrate de que la aplicación de escritorio Reactotron se esté ejecutando y recarga la aplicación.",
+    windowsReactotronHint: "Si esto no funciona, asegúrate de que la aplicación de escritorio Reactotron se esté ejecutando y recarga la aplicación.",
+    language: "Idioma",
+    languageDescription: "Cambiar el idioma de la aplicación",
+  },
+  demoUsernameScreen: {
+    signedInTitle: "¡Bienvenido de nuevo!",
+    signedInSubtitle: "Has iniciado sesión correctamente en tu cuenta.",
+    signedOutTitle: "¡Bienvenido!",
+    signedOutSubtitle: "Inicia sesión para acceder a tu experiencia personalizada.",
+    signIn: "Iniciar sesión",
+    signOut: "Cerrar sesión",
+    contentTitle: "Tu perfil",
+    authenticatedContent: "Administra la configuración y preferencias de tu cuenta. Mira tu actividad y personaliza tu experiencia.",
+    unauthenticatedContent: "Crea una cuenta o inicia sesión para desbloquear todas las funciones y obtener una experiencia personalizada.",
+    featuresTitle: "Funciones disponibles",
+    feature1: "Panel personalizado con tu contenido",
+    feature2: "Sincroniza tus datos en todos los dispositivos",
+    feature3: "Accede a funciones exclusivas para miembros",
+  },
+  languageSelector: {
+    title: "Seleccionar idioma",
+    subtitle: "Elige tu idioma preferido para la aplicación",
+    changing: "Cambiando idioma...",
   },
   // @demo remove-block-start
   ...demoEs,

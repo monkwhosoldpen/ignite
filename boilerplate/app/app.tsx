@@ -21,11 +21,13 @@ import "./utils/gestureHandler"
 import { useEffect, useState } from "react"
 import { useFonts } from "expo-font"
 import * as Linking from "expo-linking"
+import * as SplashScreen from "expo-splash-screen"
 import { KeyboardProvider } from "react-native-keyboard-controller"
 import { initialWindowMetrics, SafeAreaProvider } from "react-native-safe-area-context"
 
 import { AuthProvider } from "./context/AuthContext" // @demo remove-current-line
 import { NotificationProvider } from "./context/NotificationContext" // @demo remove-current-line
+import { LanguageProvider } from "./context/LanguageContext"
 import { initI18n } from "./i18n"
 import { AppNavigator } from "./navigators/AppNavigator"
 import { useNavigationPersistence } from "./navigators/navigationUtilities"
@@ -33,6 +35,12 @@ import { ThemeProvider } from "./theme/context"
 import { customFontsToLoad } from "./theme/typography"
 import { loadDateFnsLocale } from "./utils/formatDate"
 import * as storage from "./utils/storage"
+import { ErrorBoundary } from "./screens/ErrorScreen/ErrorBoundary"
+import Config from "./config"
+import { GestureHandlerRootView } from "react-native-gesture-handler"
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet"
+
+SplashScreen.preventAutoHideAsync()
 
 export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE"
 
@@ -45,16 +53,21 @@ const config = {
     },
     SignUp: "signup",
     Welcome: "welcome",
-    Demo: {
+    AppTabs: {
       screens: {
-        DemoShowroom: {
+        Showroom: {
           path: "showroom/:queryIndex?/:itemIndex?",
         },
-        DemoDebug: "debug",
-        DemoPodcastList: "podcast",
-        DemoCommunity: "community",
+        Debug: "debug",
+        PodcastList: "podcast",
+        Community: "community",
+        Chats: "chats",
+        Settings: "settings",
       },
     },
+    Explore: "explore",
+    Profile: "profile",
+    Username: "username",
   },
 }
 
@@ -73,19 +86,33 @@ export function App() {
   const [areFontsLoaded, fontLoadError] = useFonts(customFontsToLoad)
   const [isI18nInitialized, setIsI18nInitialized] = useState(false)
 
+  console.log("[App] Initialization status:", {
+    isNavigationStateRestored,
+    isI18nInitialized,
+    areFontsLoaded,
+    fontLoadError: !!fontLoadError,
+    initialNavigationState: !!initialNavigationState,
+  })
+
   useEffect(() => {
     initI18n()
-      .then(() => setIsI18nInitialized(true))
+      .then(() => {
+        console.log("[App] i18n initialized")
+        setIsI18nInitialized(true)
+      })
       .then(() => loadDateFnsLocale())
   }, [])
 
+  useEffect(() => {
+    if (isI18nInitialized && (areFontsLoaded || fontLoadError) && isNavigationStateRestored) {
+      console.log("[App] Hiding splash screen")
+      SplashScreen.hideAsync()
+    }
+  }, [isI18nInitialized, areFontsLoaded, fontLoadError, isNavigationStateRestored])
+
   // Before we show the app, we have to wait for our state to be ready.
-  // In the meantime, don't render anything. This will be the background
-  // color set in native by rootView's background color.
-  // In iOS: application:didFinishLaunchingWithOptions:
-  // In Android: https://stackoverflow.com/a/45838109/204044
-  // You can replace with your own loading component if you wish.
   if (!isNavigationStateRestored || !isI18nInitialized || (!areFontsLoaded && !fontLoadError)) {
+    console.log("[App] Still loading, returning null")
     return null
   }
 
@@ -94,26 +121,35 @@ export function App() {
     config,
   }
 
+  console.log("[App] Rendering app providers and AppNavigator")
   // otherwise, we're ready to render the app
   return (
-    <SafeAreaProvider initialMetrics={initialWindowMetrics}>
-      <KeyboardProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaProvider initialMetrics={initialWindowMetrics}>
+        <KeyboardProvider>
         {/* @demo remove-block-start */}
         <AuthProvider>
           <NotificationProvider>
-            {/* @demo remove-block-end */}
-            <ThemeProvider>
-              <AppNavigator
-                linking={linking}
-                initialState={initialNavigationState}
-                onStateChange={onNavigationStateChange}
-              />
-            </ThemeProvider>
-            {/* @demo remove-block-start */}
+            <LanguageProvider>
+              {/* @demo remove-block-end */}
+              <ThemeProvider>
+                <BottomSheetModalProvider>
+                  <ErrorBoundary catchErrors={Config.catchErrors}>
+                    <AppNavigator
+                      linking={linking}
+                      initialState={initialNavigationState}
+                      onStateChange={onNavigationStateChange}
+                    />
+                  </ErrorBoundary>
+                </BottomSheetModalProvider>
+              </ThemeProvider>
+              {/* @demo remove-block-start */}
+            </LanguageProvider>
           </NotificationProvider>
         </AuthProvider>
         {/* @demo remove-block-end */}
-      </KeyboardProvider>
-    </SafeAreaProvider>
+        </KeyboardProvider>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   )
 }

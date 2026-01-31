@@ -14,6 +14,8 @@ export interface ConfigBaseProps {
   exitRoutes: string[]
   SUPABASE_URL: string
   SUPABASE_ANON_KEY: string
+  SENTRY_DSN: string
+  ANALYTICS_KEY: string
   // Web push only - get from Firebase Console > Cloud Messaging > Web Push certificates
   FIREBASE_VAPID_KEY: string
   // Firebase Web SDK config - required for web notifications
@@ -42,28 +44,30 @@ const BaseConfig: ConfigBaseProps = {
    * Supabase configuration
    * Replace these with your actual Supabase project values
    */
-  SUPABASE_URL: 'https://ivmqzthpqocpfplcjgfd.supabase.co',
-  SUPABASE_ANON_KEY: 'sb_publishable_yPWUR0b2UWBbxD6XsRryZg_aoyQLteE',
+  SUPABASE_URL: process.env.EXPO_PUBLIC_SUPABASE_URL || "https://placeholder.supabase.co",
+  SUPABASE_ANON_KEY: process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || "placeholder-key",
+  SENTRY_DSN: process.env.EXPO_PUBLIC_SENTRY_DSN || "",
+  ANALYTICS_KEY: process.env.EXPO_PUBLIC_ANALYTICS_KEY || "",
 
   /**
    * Firebase VAPID key for web push notifications
    * Get from Firebase Console > Cloud Messaging > Web Push certificates
    * Only needed for web platform
    */
-  FIREBASE_VAPID_KEY: "BNM6w_tOQ5PBDCVYJ9j7Wh_HSRy_oWxcWLzB4m8fLxVU_9aYHR_BVvGUcKIeU2Zq8cFDH6cC5Ew7aKHgY4b4smU",
+  FIREBASE_VAPID_KEY: process.env.EXPO_PUBLIC_FIREBASE_VAPID_KEY || "",
 
   /**
    * Firebase Web SDK configuration
    * Get from Firebase Console > Project Settings > General > Your apps > Web app
    */
   FIREBASE_WEB_CONFIG: {
-    apiKey: "AIzaSyDr9iF87shHnvCOIsVT45_ABI_cBmpZ_BA",
-    authDomain: "beta-95455.firebaseapp.com",
-    projectId: "beta-95455",
-    storageBucket: "beta-95455.appspot.com",
-    messagingSenderId: "148420292781",
-    appId: "1:148420292781:web:674527e6be26565fdc9624",
-    measurementId: "G-108X9FEPWF",
+    apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY || "",
+    authDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN || "",
+    projectId: process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID || "",
+    storageBucket: process.env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET || "",
+    messagingSenderId: process.env.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || "",
+    appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID || "",
+    measurementId: process.env.EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID || "",
   },
 }
 

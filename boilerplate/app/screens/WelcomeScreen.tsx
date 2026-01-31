@@ -28,7 +28,7 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = function WelcomeScreen(
   const { logout } = useAuth()
 
   function goNext() {
-    navigation.navigate("Demo", { screen: "DemoShowroom", params: {} })
+    navigation.navigate("AppTabs", { screen: "Showroom", params: {} })
   }
 
   useHeader(
@@ -43,73 +43,90 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = function WelcomeScreen(
   const $bottomContainerInsets = useSafeAreaInsetsStyle(["bottom"])
 
   return (
-    <Screen preset="fixed" contentContainerStyle={$styles.flex1}>
+    <Screen preset="fixed" contentContainerStyle={$styles.flex1} safeAreaEdges={["top"]}>
       <View style={themed($topContainer)}>
         <Image style={themed($welcomeLogo)} source={welcomeLogo} resizeMode="contain" />
-        <Text
-          testID="welcome-heading"
-          style={themed($welcomeHeading)}
-          tx="welcomeScreen:readyForLaunch"
-          preset="heading"
-        />
-        <Text tx="welcomeScreen:exciting" preset="subheading" />
+        
+        <View style={themed($contentWrapper)}>
+          <Text
+            testID="welcome-heading"
+            style={themed($welcomeHeading)}
+            tx="welcomeScreen:readyForLaunch"
+            preset="heading"
+          />
+          <Text tx="welcomeScreen:exciting" preset="subheading" style={themed($welcomeSubheading)} />
+        </View>
+
         <Image
-          style={$welcomeFace}
+          style={themed($welcomeFace)}
           source={welcomeFace}
           resizeMode="contain"
-          tintColor={theme.colors.palette.neutral900}
+          tintColor={theme.colors.palette.brand500}
         />
       </View>
 
       <View style={themed([$bottomContainer, $bottomContainerInsets])}>
-        <Text tx="welcomeScreen:postscript" size="md" />
-        {/* @demo remove-block-start */}
+        <Text tx="welcomeScreen:postscript" size="sm" style={themed($postscript)} />
         <Button
           testID="next-screen-button"
-          preset="reversed"
+          preset="primary"
           tx="welcomeScreen:letsGo"
           onPress={goNext}
         />
-        {/* @demo remove-block-end */}
       </View>
     </Screen>
   )
 }
 
 const $topContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-  flexShrink: 1,
-  flexGrow: 1,
-  flexBasis: "57%",
+  flex: 1,
   justifyContent: "center",
   paddingHorizontal: spacing.lg,
 })
 
-const $bottomContainer: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
-  flexShrink: 1,
-  flexGrow: 0,
-  flexBasis: "43%",
-  backgroundColor: colors.palette.neutral100,
-  borderTopLeftRadius: 16,
-  borderTopRightRadius: 16,
-  paddingHorizontal: spacing.lg,
-  justifyContent: "space-around",
-})
-
-const $welcomeLogo: ThemedStyle<ImageStyle> = ({ spacing }) => ({
-  height: 88,
-  width: "100%",
+const $contentWrapper: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginBottom: spacing.xxl,
 })
 
-const $welcomeFace: ImageStyle = {
-  height: 169,
-  width: 269,
-  position: "absolute",
-  bottom: -47,
-  right: -80,
+const $bottomContainer: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
+  backgroundColor: colors.palette.neutral100,
+  borderTopLeftRadius: 12,
+  borderTopRightRadius: 12,
+  paddingHorizontal: spacing.lg,
+  paddingTop: spacing.xl,
+  paddingBottom: spacing.lg,
+  shadowColor: colors.palette.neutral900,
+  shadowOffset: { width: 0, height: -12 },
+  shadowOpacity: 0.1,
+  shadowRadius: 16,
+  elevation: 10,
+})
+
+const $welcomeLogo: ThemedStyle<ImageStyle> = ({ spacing }) => ({
+  height: 48, // Further reduced from 64
+  width: 120,
+  marginBottom: spacing.xl,
+  alignSelf: "flex-start",
+})
+
+const $welcomeFace: ThemedStyle<ImageStyle> = ({ spacing }) => ({
+  height: 120,
+  width: "100%",
+  alignSelf: "center",
+  opacity: 0.8,
   transform: [{ scaleX: isRTL ? -1 : 1 }],
-}
+})
 
 const $welcomeHeading: ThemedStyle<TextStyle> = ({ spacing }) => ({
+  marginBottom: spacing.xs,
+})
+
+const $welcomeSubheading: ThemedStyle<TextStyle> = ({ colors }) => ({
+  color: colors.textDim,
+})
+
+const $postscript: ThemedStyle<TextStyle> = ({ spacing, colors }) => ({
   marginBottom: spacing.md,
+  color: colors.textDim,
+  textAlign: "center",
 })

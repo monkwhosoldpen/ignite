@@ -10,6 +10,7 @@ import {
 } from "react-native"
 
 import { useAppTheme } from "@/theme/context"
+import * as Haptics from "expo-haptics"
 
 export type IconTypes = keyof typeof iconRegistry
 
@@ -69,8 +70,20 @@ export function PressableIcon(props: PressableIconProps) {
     $imageStyleOverride,
   ]
 
+  const handlePress = (e: any) => {
+    if (Haptics.impactAsync) {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+    }
+    pressableProps.onPress?.(e)
+  }
+
   return (
-    <TouchableOpacity {...pressableProps} style={$containerStyleOverride}>
+    <TouchableOpacity
+      accessibilityRole="button"
+      {...pressableProps}
+      onPress={handlePress}
+      style={[$containerStyleOverride, { minWidth: 44, minHeight: 44, justifyContent: "center", alignItems: "center" }]}
+    >
       <Image style={$imageStyle} source={iconRegistry[icon]} />
     </TouchableOpacity>
   )
@@ -134,6 +147,8 @@ export const iconRegistry = {
   user: require("@assets/icons/lock.png"), // @demo remove-current-line
   view: require("@assets/icons/view.png"),
   x: require("@assets/icons/x.png"),
+  paperPlane: require("@assets/icons/back.png"), // Rotated in component
+  microphone: require("@assets/icons/bell.png"), // Placeholder for voice
 }
 
 const $imageStyleBase: ImageStyle = {

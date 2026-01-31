@@ -136,4 +136,8 @@ declare global {
 /**
  * Now that we've setup all our Reactotron configuration, let's connect!
  */
-reactotron.connect()
+try {
+  reactotron.connect()
+} catch (error) {
+  console.warn("Reactotron connection failed - dev tools will be unavailable:", error)
+}

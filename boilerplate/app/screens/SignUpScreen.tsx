@@ -90,7 +90,7 @@ export const SignUpScreen: FC<SignUpScreenProps> = ({ navigation }) => {
           <PressableIcon
             icon={isPasswordHidden ? "view" : "hidden"}
             color={colors.palette.neutral800}
-            containerStyle={props.style}
+            containerStyle={props.style as any}
             size={20}
             onPress={() => setIsPasswordHidden(!isPasswordHidden)}
           />
@@ -106,7 +106,7 @@ export const SignUpScreen: FC<SignUpScreenProps> = ({ navigation }) => {
           <PressableIcon
             icon={isConfirmPasswordHidden ? "view" : "hidden"}
             color={colors.palette.neutral800}
-            containerStyle={props.style}
+            containerStyle={props.style as any}
             size={20}
             onPress={() => setIsConfirmPasswordHidden(!isConfirmPasswordHidden)}
           />
@@ -182,20 +182,11 @@ export const SignUpScreen: FC<SignUpScreenProps> = ({ navigation }) => {
 
       <Button
         testID="signup-button"
-        text={isLoading ? "" : "Sign Up"}
+        text="Sign Up"
         style={themed($signUpButton)}
-        preset="reversed"
+        preset="primary"
         onPress={handleSignUp}
-        disabled={isLoading}
-        RightAccessory={
-          isLoading
-            ? () => (
-                <View style={$loadingContainer}>
-                  <ActivityIndicator color={colors.palette.neutral100} />
-                </View>
-              )
-            : undefined
-        }
+        isLoading={isLoading}
       />
 
       <View style={themed($loginLinkContainer)}>

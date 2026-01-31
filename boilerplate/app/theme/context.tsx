@@ -14,6 +14,7 @@ import {
   Theme as NavTheme,
 } from "@react-navigation/native"
 import { useMMKVString } from "react-native-mmkv"
+import { useReducedMotion } from "react-native-reanimated"
 
 import { storage } from "@/utils/storage"
 
@@ -34,6 +35,8 @@ export type ThemeContextType = {
   theme: Theme
   themeContext: ImmutableThemeContextModeT
   themed: ThemedFnT
+  isDark: boolean
+  reducedMotion: boolean
 }
 
 export const ThemeContext = createContext<ThemeContextType | null>(null)
@@ -121,12 +124,16 @@ export const ThemeProvider: FC<PropsWithChildren<ThemeProviderProps>> = ({
     [theme],
   )
 
+  const reducedMotion = useReducedMotion()
+
   const value = {
     navigationTheme,
+    setThemeContextOverride,
     theme,
     themeContext,
-    setThemeContextOverride,
     themed,
+    isDark: themeContext === "dark",
+    reducedMotion,
   }
 
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>

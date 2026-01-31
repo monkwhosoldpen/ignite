@@ -4,8 +4,8 @@ import { colors as colorsLight } from "./colors"
 import { colors as colorsDark } from "./colorsDark"
 import { spacing as spacingLight } from "./spacing"
 import { spacing as spacingDark } from "./spacingDark"
-import { timing } from "./timing"
-import { typography } from "./typography"
+import { timing, animation } from "./timing"
+import { typography, fontSize } from "./typography"
 
 // This supports "light" and "dark" themes by default. If undefined, it'll use the system theme
 export type ImmutableThemeContextModeT = "light" | "dark"
@@ -19,14 +19,18 @@ export type Spacing = typeof spacingLight | typeof spacingDark
 
 // These two are consistent across themes.
 export type Timing = typeof timing
+export type Animation = typeof animation
 export type Typography = typeof typography
+export type FontSize = typeof fontSize
 
 // The overall Theme object should contain all of the data you need to style your app.
 export interface Theme {
   colors: Colors
   spacing: Spacing
   typography: Typography
+  fontSize: FontSize
   timing: Timing
+  animation: Animation
   isDark: boolean
 }
 

@@ -3,6 +3,17 @@
  * Rich, vibrant, easy on eyes (not pure black)
  */
 const palette = {
+  // Vibrant Brand Identity (Violet/Indigo)
+  brand100: "#F5F3FF",
+  brand200: "#EDE9FE",
+  brand300: "#DDD6FE",
+  brand400: "#C4B5FD",
+  brand500: "#8B5CF6",  // Main Brand Color
+  brand600: "#7C3AED",
+  brand700: "#6D28D9",
+  brand800: "#5B21B6",
+  brand900: "#4C1D95",
+
   // Rich dark blues (not pure black - easier on eyes)
   neutral900: "#F1F5F9",  // Primary text (cream white)
   neutral800: "#E2E8F0",  // Strong text
@@ -13,14 +24,6 @@ const palette = {
   neutral300: "#1E293B",  // Elevated surfaces
   neutral200: "#0F172A",  // Cards/surfaces
   neutral100: "#020617",  // Background (rich dark blue)
-
-  // Vibrant Blue (pops on dark)
-  primary600: "#E0F2FE",
-  primary500: "#1D9BF0",  // Twitter blue - stays vibrant
-  primary400: "#38BDF8",
-  primary300: "#0EA5E9",
-  primary200: "#0369A1",
-  primary100: "#0C4A6E",
 
   // Success Green
   secondary500: "#BBF7D0",
@@ -60,8 +63,8 @@ export const colors = {
   // Borders - visible but subtle
   border: palette.neutral400,
 
-  // Main accent - vibrant blue pops
-  tint: palette.primary500,
+  // Main accent - brand violet pops
+  tint: palette.brand500,
   tintInactive: palette.neutral500,
 
   // Separators
@@ -71,16 +74,16 @@ export const colors = {
   error: palette.angry500,
   errorBackground: palette.angry100,
 
-  // === TWITTER-SPECIFIC EXTRAS ===
+  // === BRAND-SPECIFIC EXTRAS ===
 
   /** Like button heart - vibrant pink */
-  like: "#F91880",
-  /** Retweet green */
-  retweet: "#00BA7C",
-  /** Blue verified badge */
-  verified: "#1D9BF0",
+  like: palette.angry500,
+  /** Success/Check */
+  success: palette.secondary400,
+  /** Verified badge - Unified Brand Color */
+  verified: palette.brand500,
   /** Gold verified badge */
-  verifiedGold: "#F4AF01",
+  verifiedGold: palette.accent400,
   /** Card/elevated surface */
   surface: palette.neutral200,
   /** Subtle hover/press state */

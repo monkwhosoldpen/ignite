@@ -5,7 +5,7 @@ import { ListItem } from "@/components/ListItem"
 import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
 import { isRTL } from "@/i18n"
-import { DemoTabScreenProps } from "@/navigators/navigationTypes"
+import { AppTabScreenProps } from "@/navigators/navigationTypes"
 import { useAppTheme } from "@/theme/context"
 import { $styles } from "@/theme/styles"
 import type { ThemedStyle } from "@/theme/types"
@@ -16,7 +16,9 @@ const reactNativeLiveLogo = require("@assets/images/demo/rnl-logo.png")
 const reactNativeNewsletterLogo = require("@assets/images/demo/rnn-logo.png")
 const reactNativeRadioLogo = require("@assets/images/demo/rnr-logo.png")
 
-export const DemoCommunityScreen: FC<DemoTabScreenProps<"DemoCommunity">> =
+export const DemoCommunityScreen: FC<AppTabScreenProps<"Community">> = 
+
+
   function DemoCommunityScreen(_props) {
     const { themed } = useAppTheme()
     return (

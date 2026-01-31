@@ -15,9 +15,10 @@ import { SignUpScreen } from "@/screens/SignUpScreen" // @demo remove-current-li
 import { WelcomeScreen } from "@/screens/WelcomeScreen"
 import { useAppTheme } from "@/theme/context"
 
-import { DemoNavigator } from "./DemoNavigator" // @demo remove-current-line
-import { DemoExploreScreen } from "@/screens/DemoExploreScreen"
-import { DemoProfileScreen } from "@/screens/DemoProfileScreen"
+import { Navigator } from "./Navigator" // @demo remove-current-line
+import { ExploreScreen } from "@/screens/ExploreScreen"
+import { ProfileScreen } from "@/screens/ProfileScreen"
+import { UsernameScreen } from "@/screens/UsernameScreen"
 import { EpisodeProvider } from "@/context/EpisodeContext"
 import type { AppStackParamList, NavigationProps } from "./navigationTypes"
 import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
@@ -34,11 +35,16 @@ const Stack = createNativeStackNavigator<AppStackParamList>()
 
 const AppStack = () => {
   // @demo remove-block-start
-  const { isAuthenticated } = useAuth()
-  // @demo remove-block-end
+  const { isAuthenticated, isLoading } = useAuth()
   const {
     theme: { colors },
   } = useAppTheme()
+
+  // If auth is still loading, don't render the navigator yet.
+  if (isLoading) {
+    return null
+  }
+  // @demo remove-block-end
 
   return (
     <Stack.Navigator
@@ -48,30 +54,45 @@ const AppStack = () => {
         contentStyle: {
           backgroundColor: colors.background,
         },
+        animation: "slide_from_right",
+        animationDuration: 400,
       }}
-      initialRouteName={isAuthenticated ? "Welcome" : "Login"} // @demo remove-current-line
+      initialRouteName={isAuthenticated ? "AppTabs" : "Login"} // @demo remove-current-line
     >
       {/* @demo remove-block-start */}
       {isAuthenticated ? (
         <>
+          <Stack.Screen name="AppTabs" component={Navigator} />
           {/* @demo remove-block-end */}
-          <Stack.Screen name="Welcome" component={WelcomeScreen} />
-          {/* @demo remove-block-start */}
-          <Stack.Screen name="Demo" component={DemoNavigator} />
           <Stack.Screen 
-            name="DemoExplore" 
-            component={(props: NativeStackScreenProps<AppStackParamList, "DemoExplore">) => (
+            name="Welcome" 
+            component={WelcomeScreen} 
+            options={{ animation: "fade" }}
+          />
+          {/* @demo remove-block-start */}
+          <Stack.Screen 
+            name="Explore" 
+            component={(props: NativeStackScreenProps<AppStackParamList, "Explore">) => (
               <EpisodeProvider>
-                <DemoExploreScreen {...props} />
+                <ExploreScreen {...props} />
               </EpisodeProvider>
             )} 
           />
-          <Stack.Screen name="DemoProfile" component={DemoProfileScreen} />
+          <Stack.Screen 
+            name="Profile" 
+            component={ProfileScreen} 
+            options={{ animation: "slide_from_bottom" }}
+          />
+          <Stack.Screen 
+            name="Username" 
+            component={UsernameScreen} 
+            options={{ animation: "slide_from_right" }}
+          />
         </>
       ) : (
         <>
-          <Stack.Screen name="Login" component={LoginScreen} />
-          <Stack.Screen name="SignUp" component={SignUpScreen} />
+          <Stack.Screen name="Login" component={LoginScreen} options={{ animation: "fade" }} />
+          <Stack.Screen name="SignUp" component={SignUpScreen} options={{ animation: "fade" }} />
         </>
       )}
       {/* @demo remove-block-end */}

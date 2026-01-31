@@ -4,9 +4,9 @@ import { Button } from "@/components/Button"
 import { Card } from "@/components/Card"
 import { Icon } from "@/components/Icon"
 
-import { DemoDivider } from "../DemoDivider"
+import { DemoDivider } from "../Divider"
 import { Demo } from "./types"
-import { DemoUseCase } from "../DemoUseCase"
+import { DemoUseCase } from "../UseCase"
 
 export const DemoCard: Demo = {
   name: "Card",

@@ -66,7 +66,7 @@ export const LoginScreen: FC<LoginScreenProps> = ({ navigation }) => {
           <PressableIcon
             icon={isAuthPasswordHidden ? "view" : "hidden"}
             color={colors.palette.neutral800}
-            containerStyle={props.style}
+            containerStyle={props.style as any}
             size={20}
             onPress={() => setIsAuthPasswordHidden(!isAuthPasswordHidden)}
           />
@@ -124,18 +124,9 @@ export const LoginScreen: FC<LoginScreenProps> = ({ navigation }) => {
         testID="login-button"
         tx="loginScreen:tapToLogIn"
         style={themed($tapButton)}
-        preset="reversed"
+        preset="primary"
         onPress={login}
-        disabled={isLoading}
-        RightAccessory={
-          isLoading
-            ? () => (
-                <View style={$loadingContainer}>
-                  <ActivityIndicator color={colors.palette.neutral100} />
-                </View>
-              )
-            : undefined
-        }
+        isLoading={isLoading}
       />
 
       <View style={themed($signUpLinkContainer)}>
@@ -177,13 +168,13 @@ const $tapButton: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginTop: spacing.xs,
 })
 
-const $loadingContainer: ViewStyle = {
+const $loadingContainer: ThemedStyle<ViewStyle> = () => ({
   position: "absolute",
   left: 0,
   right: 0,
   justifyContent: "center",
   alignItems: "center",
-}
+})
 
 const $signUpLinkContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   flexDirection: "row",

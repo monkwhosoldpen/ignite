@@ -1,9 +1,9 @@
 import { ComponentType, Fragment, ReactElement } from "react"
 import {
+  Pressable,
+  PressableProps,
   StyleProp,
   TextStyle,
-  TouchableOpacity,
-  TouchableOpacityProps,
   View,
   ViewProps,
   ViewStyle,
@@ -14,10 +14,11 @@ import { $styles } from "@/theme/styles"
 import type { ThemedStyle, ThemedStyleArray } from "@/theme/types"
 
 import { Text, TextProps } from "./Text"
+import Animated, { FadeIn, FadeOut, useAnimatedStyle, withSpring, useSharedValue } from "react-native-reanimated"
 
 type Presets = "default" | "reversed"
 
-interface CardProps extends TouchableOpacityProps {
+interface CardProps extends PressableProps {
   /**
    * One of the different types of text presets.
    */
@@ -120,6 +121,8 @@ interface CardProps extends TouchableOpacityProps {
   FooterComponent?: ReactElement
 }
 
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable)
+
 /**
  * Cards are useful for displaying related information in a contained way.
  * If a ListItem displays content horizontally, a Card can be used to display content vertically.
@@ -151,26 +154,33 @@ export function Card(props: CardProps) {
     ContentTextProps,
     HeadingTextProps,
     FooterTextProps,
-    ...WrapperProps
+    ...rest
   } = props
 
   const {
     themed,
     theme: { spacing },
+    reducedMotion,
   } = useAppTheme()
 
   const preset: Presets = props.preset ?? "default"
-  const isPressable = !!WrapperProps.onPress
+  const isPressable = !!rest.onPress
   const isHeadingPresent = !!(HeadingComponent || heading || headingTx)
   const isContentPresent = !!(ContentComponent || content || contentTx)
   const isFooterPresent = !!(FooterComponent || footer || footerTx)
 
-  const Wrapper = (isPressable ? TouchableOpacity : View) as ComponentType<
-    TouchableOpacityProps | ViewProps
-  >
+  const pressedValue = useSharedValue(0)
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ scale: withSpring(pressedValue.value === 1 ? 0.98 : 1, { damping: 10, stiffness: 200 }) }],
+      shadowOpacity: withSpring(pressedValue.value === 1 ? 0.15 : 0.08),
+    }
+  })
+
   const HeaderContentWrapper = verticalAlignment === "force-footer-bottom" ? View : Fragment
 
-  const $containerStyle: StyleProp<ViewStyle> = [
+  const $containerStyle = [
     themed($containerPresets[preset]),
     $containerStyleOverride,
   ]
@@ -200,12 +210,21 @@ export function Card(props: CardProps) {
     RightComponent && { marginEnd: spacing.md },
   ]
 
+  const Wrapper = isPressable ? AnimatedPressable : Animated.View
+
+  const handleStyle = (state: { pressed: boolean }) => {
+    if (state.pressed) pressedValue.value = 1
+    else pressedValue.value = 0
+    return [$containerStyle, animatedStyle]
+  }
+
   return (
     <Wrapper
-      style={$containerStyle}
-      activeOpacity={0.8}
+      style={isPressable ? handleStyle : $containerStyle}
       accessibilityRole={isPressable ? "button" : undefined}
-      {...WrapperProps}
+      entering={reducedMotion ? undefined : FadeIn.duration(300)}
+      exiting={reducedMotion ? undefined : FadeOut.duration(200)}
+      {...rest}
     >
       {LeftComponent}
 
@@ -255,8 +274,9 @@ export function Card(props: CardProps) {
   )
 }
 
+
 const $containerBase: ThemedStyle<ViewStyle> = (theme) => ({
-  borderRadius: theme.spacing.md,
+  borderRadius: 12,
   padding: theme.spacing.xs,
   borderWidth: 1,
   shadowColor: theme.colors.palette.neutral800,

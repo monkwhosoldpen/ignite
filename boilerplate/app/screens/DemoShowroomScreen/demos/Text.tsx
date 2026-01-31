@@ -2,9 +2,9 @@
 import { Text } from "@/components/Text"
 import { translate } from "@/i18n/translate"
 
-import { DemoDivider } from "../DemoDivider"
+import { DemoDivider } from "../Divider"
 import { Demo } from "./types"
-import { DemoUseCase } from "../DemoUseCase"
+import { DemoUseCase } from "../UseCase"
 
 export const DemoText: Demo = {
   name: "Text",

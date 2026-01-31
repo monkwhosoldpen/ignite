@@ -4,6 +4,8 @@ import i18n from "i18next"
 import { initReactI18next } from "react-i18next"
 import "intl-pluralrules"
 
+import { translate } from "./translate"
+
 // if English isn't your default language, move Translations to the appropriate language file.
 import ar from "./ar"
 import en, { Translations } from "./en"
@@ -84,3 +86,5 @@ type RecursiveKeyOfHandleValue<
       ? Text | `${Text}:${RecursiveKeyOfInner<TValue>}`
       : Text | `${Text}.${RecursiveKeyOfInner<TValue>}`
     : Text
+
+export { translate }

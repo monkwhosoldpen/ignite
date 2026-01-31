@@ -1,5 +1,13 @@
-import { useEffect, useMemo, useRef, useCallback } from "react"
-import { Animated, Image, ImageStyle, Platform, StyleProp, View, ViewStyle } from "react-native"
+import { useEffect, useMemo, useCallback } from "react"
+import { Image, ImageStyle, Platform, StyleProp, View, ViewStyle } from "react-native"
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+  withTiming,
+  interpolateColor,
+  interpolate,
+} from "react-native-reanimated"
 
 import { iconRegistry } from "@/components/Icon"
 import { isRTL } from "@/i18n"
@@ -49,6 +57,7 @@ function SwitchInput(props: SwitchInputProps) {
     outerStyle: $outerStyleOverride,
     innerStyle: $innerStyleOverride,
     detailStyle: $detailStyleOverride,
+    pressed,
   } = props
 
   const {
@@ -56,46 +65,36 @@ function SwitchInput(props: SwitchInputProps) {
     themed,
   } = useAppTheme()
 
-  const animate = useRef(new Animated.Value(on ? 1 : 0)) // Initial value is set based on isActive
-  const opacity = useRef(new Animated.Value(0))
+  const progress = useSharedValue(on ? 1 : 0)
 
   useEffect(() => {
-    Animated.timing(animate.current, {
-      toValue: on ? 1 : 0,
-      duration: 300,
-      useNativeDriver: true, // Enable native driver for smoother animations
-    }).start()
-  }, [on])
-
-  useEffect(() => {
-    Animated.timing(opacity.current, {
-      toValue: on ? 1 : 0,
-      duration: 300,
-      useNativeDriver: true,
-    }).start()
-  }, [on])
+    progress.value = withSpring(on ? 1 : 0, {
+      damping: 15,
+      stiffness: 150,
+    })
+  }, [on, progress])
 
   const knobSizeFallback = 2
 
   const knobWidth = [$detailStyleOverride?.width, $switchDetail?.width, knobSizeFallback].find(
     (v) => typeof v === "number",
-  )
+  ) as number
 
   const knobHeight = [$detailStyleOverride?.height, $switchDetail?.height, knobSizeFallback].find(
     (v) => typeof v === "number",
-  )
+  ) as number
 
   const offBackgroundColor = [
     disabled && colors.palette.neutral400,
     status === "error" && colors.errorBackground,
     colors.palette.neutral300,
-  ].filter(Boolean)[0]
+  ].filter(Boolean)[0] as string
 
   const onBackgroundColor = [
     disabled && colors.transparent,
     status === "error" && colors.errorBackground,
     colors.palette.secondary500,
-  ].filter(Boolean)[0]
+  ].filter(Boolean)[0] as string
 
   const knobBackgroundColor = (function () {
     if (on) {
@@ -104,14 +103,14 @@ function SwitchInput(props: SwitchInputProps) {
         status === "error" && colors.error,
         disabled && colors.palette.neutral600,
         colors.palette.neutral100,
-      ].filter(Boolean)[0]
+      ].filter(Boolean)[0] as string
     } else {
       return [
         $innerStyleOverride?.backgroundColor,
         disabled && colors.palette.neutral600,
         status === "error" && colors.error,
         colors.palette.neutral200,
-      ].filter(Boolean)[0]
+      ].filter(Boolean)[0] as string
     }
   })()
 
@@ -130,26 +129,44 @@ function SwitchInput(props: SwitchInputProps) {
     $themedSwitchInner?.paddingRight ||
     0) as number
 
-  const outputRange =
+  const translateXRange =
     Platform.OS === "web"
       ? isRTL
-        ? [+(knobWidth || 0) + offsetRight, offsetLeft]
-        : [offsetLeft, +(knobWidth || 0) + offsetRight]
-      : [rtlAdjustment * offsetLeft, rtlAdjustment * (+(knobWidth || 0) + offsetRight)]
+        ? [knobWidth + offsetRight, offsetLeft]
+        : [offsetLeft, knobWidth + offsetRight]
+      : [rtlAdjustment * offsetLeft, rtlAdjustment * (knobWidth + offsetRight)]
 
-  const $animatedSwitchKnob = animate.current.interpolate({
-    inputRange: [0, 1],
-    outputRange,
+  const animatedInnerStyle = useAnimatedStyle(() => {
+    return {
+      opacity: progress.value,
+      backgroundColor: onBackgroundColor,
+    }
+  })
+
+  const animatedKnobStyle = useAnimatedStyle(() => {
+    const scale = withTiming(pressed ? 1.15 : 1, { duration: 100 })
+    return {
+      transform: [
+        { translateX: interpolate(progress.value, [0, 1], translateXRange) },
+        { scale },
+      ],
+      backgroundColor: knobBackgroundColor,
+    }
+  })
+
+  const animatedOuterStyle = useAnimatedStyle(() => {
+    return {
+      backgroundColor: interpolateColor(progress.value, [0, 1], [offBackgroundColor, onBackgroundColor]),
+    }
   })
 
   return (
-    <View style={[$inputOuter, { backgroundColor: offBackgroundColor }, $outerStyleOverride]}>
+    <Animated.View style={[$inputOuter, animatedOuterStyle, $outerStyleOverride]}>
       <Animated.View
         style={[
           $themedSwitchInner,
-          { backgroundColor: onBackgroundColor },
+          animatedInnerStyle,
           $innerStyleOverride,
-          { opacity: opacity.current },
         ]}
       />
 
@@ -160,12 +177,11 @@ function SwitchInput(props: SwitchInputProps) {
         style={[
           $switchDetail,
           $detailStyleOverride,
-          { transform: [{ translateX: $animatedSwitchKnob }] },
+          animatedKnobStyle,
           { width: knobWidth, height: knobHeight },
-          { backgroundColor: knobBackgroundColor },
         ]}
       />
-    </View>
+    </Animated.View>
   )
 }
 

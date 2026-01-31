@@ -30,7 +30,7 @@ import { Switch } from "@/components/Toggle/Switch"
 import { useEpisodes, useEpisode } from "@/context/EpisodeContext"
 import { isRTL } from "@/i18n"
 import { translate } from "@/i18n/translate"
-import { DemoTabScreenProps } from "@/navigators/navigationTypes"
+import { AppTabScreenProps } from "@/navigators/navigationTypes"
 import type { EpisodeItem } from "@/services/api/types"
 import { useAppTheme } from "@/theme/context"
 import { $styles } from "@/theme/styles"
@@ -40,15 +40,16 @@ import { openLinkInBrowser } from "@/utils/openLinkInBrowser"
 
 const ICON_SIZE = 14
 
-const rnrImage1 = require("@assets/images/demo/rnr-image-1.png")
-const rnrImage2 = require("@assets/images/demo/rnr-image-2.png")
-const rnrImage3 = require("@assets/images/demo/rnr-image-3.png")
+const rnrImage1 = require("@assets/images/logo.png")
+const rnrImage2 = require("@assets/images/logo.png")
+const rnrImage3 = require("@assets/images/logo.png")
 
 const rnrImages = [rnrImage1, rnrImage2, rnrImage3]
 
-export const DemoPodcastListScreen: FC<DemoTabScreenProps<"DemoPodcastList">> = (_props) => {
+export const DemoPodcastListScreen: FC<AppTabScreenProps<"PodcastList">> = (_props) => {
   const { themed } = useAppTheme()
   const {
+// ...
     totalEpisodes,
     totalFavorites,
 
@@ -230,7 +231,7 @@ const EpisodeCard = ({
               <Icon
                 icon="heart"
                 size={ICON_SIZE}
-                color={colors.palette.neutral800} // dark grey
+                color={colors.palette.neutral400}
               />
             </Animated.View>
             <Animated.View
@@ -239,7 +240,7 @@ const EpisodeCard = ({
               <Icon
                 icon="heart"
                 size={ICON_SIZE}
-                color={colors.palette.primary400} // pink
+                color={colors.tint}
               />
             </Animated.View>
           </View>
@@ -255,7 +256,7 @@ const EpisodeCard = ({
       onPress={handlePressCard}
       onLongPress={handlePressFavorite}
       HeadingComponent={
-        <View style={[$styles.row, themed($metadata)]}>
+        <View style={[$styles.row, themed($metadata) as any]}>
           <Text
             style={themed($metadataText)}
             size="xxs"
@@ -370,8 +371,8 @@ const $favoriteButton: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
 })
 
 const $unFavoriteButton: ThemedStyle<ViewStyle> = ({ colors }) => ({
-  borderColor: colors.palette.primary100,
-  backgroundColor: colors.palette.primary100,
+  borderColor: colors.palette.brand100,
+  backgroundColor: colors.palette.brand100,
 })
 
 const $emptyState: ThemedStyle<ViewStyle> = ({ spacing }) => ({

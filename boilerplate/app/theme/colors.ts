@@ -3,24 +3,27 @@
  * Vibrant, clean, high contrast
  */
 const palette = {
+  // Vibrant Brand Identity (Violet/Indigo)
+  brand100: "#F5F3FF",
+  brand200: "#EDE9FE",
+  brand300: "#DDD6FE",
+  brand400: "#C4B5FD",
+  brand500: "#8B5CF6",  // Main Brand Color
+  brand600: "#7C3AED",
+  brand700: "#6D28D9",
+  brand800: "#5B21B6",
+  brand900: "#4C1D95",
+
   // Crisp whites and clean grays (not muddy)
   neutral100: "#FFFFFF",
-  neutral200: "#F8FAFC",  // Subtle off-white for cards
-  neutral300: "#E2E8F0",  // Clean border gray
-  neutral400: "#94A3B8",  // Muted text
-  neutral500: "#64748B",  // Secondary text
-  neutral600: "#475569",  // Body text
-  neutral700: "#334155",  // Strong text
-  neutral800: "#0F172A",  // Headlines (rich dark blue-black)
-  neutral900: "#020617",  // Pure dark
-
-  // Vibrant Twitter Blue (punchy, not muted)
-  primary100: "#E0F2FE",
-  primary200: "#BAE6FD",
-  primary300: "#7DD3FC",
-  primary400: "#38BDF8",  // Bright sky blue
-  primary500: "#1D9BF0",  // Twitter blue - THE accent
-  primary600: "#0284C7",
+  neutral200: "#F8FAFC",
+  neutral300: "#F1F5F9",
+  neutral400: "#E2E8F0",
+  neutral500: "#94A3B8",
+  neutral600: "#64748B",
+  neutral700: "#475569",
+  neutral800: "#1E293B",
+  neutral900: "#0F172A",
 
   // Success Green (vibrant, modern)
   secondary100: "#DCFCE7",
@@ -60,9 +63,9 @@ export const colors = {
   // Borders - subtle but visible
   border: palette.neutral300,
 
-  // Main accent - vibrant blue
-  tint: palette.primary500,
-  tintInactive: palette.neutral400,
+  // Main accent - brand violet
+  tint: palette.brand500,
+  tintInactive: palette.neutral500,
 
   // Separators
   separator: palette.neutral200,
@@ -71,17 +74,17 @@ export const colors = {
   error: palette.angry500,
   errorBackground: palette.angry100,
 
-  // === TWITTER-SPECIFIC EXTRAS ===
+  // === BRAND-SPECIFIC EXTRAS ===
   // Use these for specific UI elements
 
   /** Like button heart */
-  like: "#F91880",
-  /** Retweet green */
-  retweet: "#00BA7C",
-  /** Blue verified badge */
-  verified: "#1D9BF0",
+  like: palette.angry500,
+  /** Success/Check */
+  success: palette.secondary400,
+  /** Verified badge - Unified Brand Color */
+  verified: palette.brand500,
   /** Gold verified badge */
-  verifiedGold: "#F4AF01",
+  verifiedGold: palette.accent400,
   /** Card/elevated surface */
   surface: palette.neutral100,
   /** Subtle hover/press state */

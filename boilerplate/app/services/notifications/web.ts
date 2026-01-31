@@ -35,16 +35,28 @@ async function registerServiceWorker(): Promise<ServiceWorkerRegistration | null
 export async function initializeFirebaseWeb(): Promise<void> {
   if (typeof window === "undefined") return // SSR guard
 
-  if (getApps().length === 0) {
-    app = initializeApp(Config.FIREBASE_WEB_CONFIG)
-    messagingInstance = getMessaging(app)
-  } else {
-    app = getApps()[0]
-    messagingInstance = getMessaging(app)
+  // Check if Firebase config is properly configured
+  if (!Config.FIREBASE_WEB_CONFIG.projectId || !Config.FIREBASE_WEB_CONFIG.apiKey) {
+    console.warn("Firebase configuration is missing required fields. Notifications will be disabled.")
+    console.warn("Please set EXPO_PUBLIC_FIREBASE_PROJECT_ID and EXPO_PUBLIC_FIREBASE_API_KEY in your environment variables.")
+    return
   }
 
-  // Register service worker for background notifications
-  serviceWorkerRegistration = await registerServiceWorker()
+  try {
+    if (getApps().length === 0) {
+      app = initializeApp(Config.FIREBASE_WEB_CONFIG)
+      messagingInstance = getMessaging(app)
+    } else {
+      app = getApps()[0]
+      messagingInstance = getMessaging(app)
+    }
+
+    // Register service worker for background notifications
+    serviceWorkerRegistration = await registerServiceWorker()
+  } catch (error) {
+    console.error("Failed to initialize Firebase:", error)
+    // Don't throw the error to prevent app crash
+  }
 }
 
 /**
@@ -78,7 +90,12 @@ export async function getFCMToken(vapidKey: string): Promise<PushToken | null> {
   }
 
   if (!messagingInstance) {
-    console.error("Firebase messaging not initialized")
+    console.warn("Firebase messaging not initialized - check your Firebase configuration")
+    return null
+  }
+
+  if (!vapidKey) {
+    console.warn("VAPID key is required for web push notifications")
     return null
   }
 

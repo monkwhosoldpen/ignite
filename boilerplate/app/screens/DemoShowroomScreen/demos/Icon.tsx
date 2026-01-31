@@ -6,8 +6,9 @@ import { Text } from "@/components/Text"
 import { $styles } from "@/theme/styles"
 import type { ThemedStyle } from "@/theme/types"
 
+import { DemoDivider } from "../Divider"
 import { Demo } from "./types"
-import { DemoUseCase } from "../DemoUseCase"
+import { DemoUseCase } from "../UseCase"
 
 const $demoIconContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   padding: spacing.xs,
@@ -77,7 +78,7 @@ export const DemoIcon: Demo = {
       />
       <Icon
         icon="ladybug"
-        color={theme.colors.palette.primary500}
+        color={theme.colors.tint}
         containerStyle={themed($demoIconContainer)}
       />
       <Icon

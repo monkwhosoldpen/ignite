@@ -20,35 +20,37 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated"
+import { FlashList } from "@shopify/flash-list"
+import * as Haptics from "expo-haptics"
 
 import { Button, type ButtonAccessoryProps } from "@/components/Button"
 import { Card } from "@/components/Card"
 import { EmptyState } from "@/components/EmptyState"
-import { Icon } from "@/components/Icon"
+import { Icon, PressableIcon } from "@/components/Icon"
 import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
 import { Switch } from "@/components/Toggle/Switch"
 import { useEpisodes, useEpisode } from "@/context/EpisodeContext"
 import { isRTL } from "@/i18n"
 import { translate } from "@/i18n/translate"
-import { DemoTabScreenProps, AppStackScreenProps } from "@/navigators/navigationTypes"
+import { AppStackScreenProps } from "@/navigators/navigationTypes"
 import type { EpisodeItem } from "@/services/api/types"
 import { useAppTheme } from "@/theme/context"
 import { $styles } from "@/theme/styles"
-import type { ThemedStyle } from "@/theme/types"
 import { delay } from "@/utils/delay"
+import { ExploreItemSkeleton } from "@/components/ExploreItemSkeleton"
 import { openLinkInBrowser } from "@/utils/openLinkInBrowser"
+import type { ThemedStyle } from "@/theme/types"
 
-const ICON_SIZE = 14
-
-const rnrImage1 = require("@assets/images/demo/rnr-image-1.png")
-const rnrImage2 = require("@assets/images/demo/rnr-image-2.png")
-const rnrImage3 = require("@assets/images/demo/rnr-image-3.png")
+const rnrImage1 = require("@assets/images/logo.png")
+const rnrImage2 = require("@assets/images/logo.png")
+const rnrImage3 = require("@assets/images/logo.png")
 
 const rnrImages = [rnrImage1, rnrImage2, rnrImage3]
+const ICON_SIZE = 14
 
-export const DemoExploreScreen: FC<AppStackScreenProps<"DemoExplore">> = (_props) => {
-  const { themed } = useAppTheme()
+export const ExploreScreen: FC<AppStackScreenProps<"Explore">> = (_props) => {
+  const { themed, theme: { colors } } = useAppTheme()
   const {
     totalEpisodes,
     totalFavorites,
@@ -81,28 +83,39 @@ export const DemoExploreScreen: FC<AppStackScreenProps<"DemoExplore">> = (_props
 
   return (
     <Screen preset="fixed" safeAreaEdges={["top"]} contentContainerStyle={$styles.flex1}>
-      {/* Header */}
-      <View style={themed($header)}>
-        <TouchableOpacity
-          onPress={() => _props.navigation.navigate("Demo" as any)}
-          style={themed($backButton)}
-        >
-          <Icon icon="caretLeft" size={24} color="#999" />
-        </TouchableOpacity>
-        <Text preset="heading" text="Explore" style={themed($headerTitle)} />
-        <View style={themed($headerSpacer)} />
-      </View>
-      
-      <FlatList<EpisodeItem>
+                  {/* Header */}
+                  <View style={themed($header)}>
+                    <PressableIcon
+                      icon="caretLeft"
+                      size={24}
+                      color={colors.textDim}
+                                onPress={() => {
+                                  if (_props.navigation.canGoBack()) {
+                                    _props.navigation.goBack()
+                                  } else {
+                                    _props.navigation.navigate("AppTabs", { screen: "Chats" })
+                                  }
+                                }}                      accessibilityLabel="Go back"
+                      containerStyle={themed($backButton)}
+                    />              <Text preset="heading" text="Explore" style={themed($headerTitle)} />    
+              <View style={themed($headerSpacer)} />
+            </View>      
+
+      <FlashList
         contentContainerStyle={themed([$styles.container, $listContentContainer])}
-        data={episodesForList}
+        data={isLoading || refreshing ? [] : episodesForList}
         extraData={totalEpisodes + totalFavorites}
         refreshing={refreshing}
         onRefresh={manualRefresh}
-        keyExtractor={(item) => item.guid}
+        keyExtractor={(item: any) => item.guid}
+        {...({ estimatedItemSize: 120 } as any)}
         ListEmptyComponent={
-          isLoading ? (
-            <ActivityIndicator />
+          isLoading || refreshing ? (
+            <View>
+              {[1, 2, 3, 4, 5].map((i) => (
+                <ExploreItemSkeleton key={i} />
+              ))}
+            </View>
           ) : (
             <EmptyState
               preset="generic"
@@ -137,7 +150,7 @@ export const DemoExploreScreen: FC<AppStackScreenProps<"DemoExplore">> = (_props
             )}
           </View>
         }
-        renderItem={({ item }) => (
+        renderItem={({ item }: any) => (
           <ExploreItemCard exploreItem={item} onPressFavorite={() => toggleFavorite(item)} />
         )}
       />
@@ -188,6 +201,9 @@ const ExploreItemCard = ({
   })
 
   const handlePressFavorite = useCallback(() => {
+    if (Haptics.notificationAsync) {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
+    }
     onPressFavorite()
     liked.value = withSpring(liked.value ? 0 : 1)
   }, [liked, onPressFavorite])
@@ -251,7 +267,7 @@ const ExploreItemCard = ({
             >
               <Icon
                 icon="heart"
-                color={colors.palette.primary500}
+                color={colors.tint}
                 size={ICON_SIZE}
               />
             </Animated.View>
@@ -364,6 +380,14 @@ const $item: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
   marginTop: spacing.md,
   minHeight: 120,
   backgroundColor: colors.palette.neutral100,
+  borderRadius: 12,
+  borderWidth: 1,
+  borderColor: colors.border,
+  shadowColor: colors.palette.neutral900,
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.05,
+  shadowRadius: 4,
+  elevation: 3,
 })
 
 const $itemThumbnail: ThemedStyle<ImageStyle> = ({ spacing }) => ({
@@ -399,19 +423,19 @@ const $metadataText: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
 const $favoriteButton: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
   borderRadius: 17,
   marginTop: spacing.md,
-  justifyContent: "flex-start",
+  justifyContent: "center",
   backgroundColor: colors.palette.neutral300,
   borderColor: colors.palette.neutral300,
   paddingHorizontal: spacing.md,
   paddingTop: spacing.xxxs,
   paddingBottom: 0,
-  minHeight: 32,
+  minHeight: 44,
   alignSelf: "flex-start",
 })
 
 const $unFavoriteButton: ThemedStyle<ViewStyle> = ({ colors }) => ({
-  borderColor: colors.palette.primary100,
-  backgroundColor: colors.palette.primary100,
+  borderColor: colors.palette.brand100,
+  backgroundColor: colors.palette.brand100,
 })
 
 const $emptyState: ThemedStyle<ViewStyle> = ({ spacing }) => ({

@@ -2,7 +2,7 @@ import { FC, useState } from "react"
 import { Image, ImageStyle, TextStyle, View, ViewStyle, TouchableOpacity, useWindowDimensions, Platform } from "react-native"
 
 import { Button } from "@/components/Button"
-import { Icon } from "@/components/Icon"
+import { Icon, PressableIcon } from "@/components/Icon"
 import { ListItem } from "@/components/ListItem"
 import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
@@ -15,6 +15,7 @@ import type { ThemedStyle } from "@/theme/types"
 const profileImage = require("@assets/images/demo/cr-logo.png")
 
 // Mock sidebar items
+// ...
 const mockSidebarItems = Array.from({ length: 10 }, (_, index) => ({
   id: index + 1,
   title: `Channel #${index + 1}`,
@@ -22,8 +23,8 @@ const mockSidebarItems = Array.from({ length: 10 }, (_, index) => ({
   unread: index < 3, // First 3 items have unread messages
 }))
 
-export const DemoProfileScreen: FC<AppStackScreenProps<"DemoProfile">> =
-  function DemoProfileScreen(_props) {
+export const ProfileScreen: FC<AppStackScreenProps<"Profile">> =
+  function ProfileScreen(_props) {
     const { themed } = useAppTheme()
     const { width: screenWidth } = useWindowDimensions()
 
@@ -58,6 +59,8 @@ export const DemoProfileScreen: FC<AppStackScreenProps<"DemoProfile">> =
             style={themed($overlay)}
             onPress={() => setIsSidebarExtended(false)}
             activeOpacity={0.5}
+            accessibilityLabel="Close sidebar overlay"
+            accessibilityRole="button"
           />
         )}
         
@@ -76,21 +79,18 @@ export const DemoProfileScreen: FC<AppStackScreenProps<"DemoProfile">> =
               } : {})
             }
           ]}>
-            {/* Sidebar Header */}
-            <View style={themed($sidebarHeader)}>
-              <TouchableOpacity
-                onPress={() => setIsSidebarExtended(!isSidebarExtended)}
-                style={themed($toggleButton)}
-              >
-                <Icon
-                  icon={isSidebarExtended ? "caretLeft" : "caretRight"}
-                  size={isMobile ? 24 : 20}
-                  color="#999"
-                />
-              </TouchableOpacity>
-              
-              {isSidebarExtended && (
-                <View style={themed($profileSection)}>
+                        {/* Sidebar Header */}
+                        <View style={themed($sidebarHeader)}>
+                          <PressableIcon
+                            icon={isSidebarExtended ? "caretLeft" : "caretRight"}
+                            size={isMobile ? 24 : 20}
+                            color="#999"
+                            onPress={() => setIsSidebarExtended(!isSidebarExtended)}
+                            accessibilityLabel={isSidebarExtended ? "Collapse sidebar" : "Expand sidebar"}
+                            containerStyle={themed($toggleButton)}
+                          />
+            
+                          {isSidebarExtended && (                <View style={themed($profileSection)}>
                   <Image source={profileImage} style={$sidebarProfileImage} />
                   <Text preset="subheading" text="John Doe" style={themed($sidebarProfileName)} />
                   <Text text="Online" style={themed($onlineStatus)} />
@@ -105,12 +105,13 @@ export const DemoProfileScreen: FC<AppStackScreenProps<"DemoProfile">> =
                   key={item.id}
                   style={themed($sidebarItem)}
                   onPress={() => {
-                    console.log(`Channel ${item.id} pressed`)
                     // On mobile, close sidebar after selecting channel
                     if (isMobile) {
                       setIsSidebarExtended(false)
                     }
                   }}
+                  accessibilityLabel={item.title}
+                  accessibilityRole="button"
                 >
                   {isSidebarExtended ? (
                     <View style={[$styles.row, { justifyContent: "space-between", flex: 1 }]}>
@@ -142,22 +143,29 @@ export const DemoProfileScreen: FC<AppStackScreenProps<"DemoProfile">> =
           }
         ]}>
           <Screen preset="scroll" contentContainerStyle={$styles.container} safeAreaEdges={["top"]}>
-            {/* Header */}
-            <View style={themed($header)}>
-              <TouchableOpacity
-                onPress={() => _props.navigation.navigate("Demo" as any)}
-                style={themed($backButton)}
-              >
-                <Icon icon="caretLeft" size={isMobile ? 28 : 24} color="#999" />
-              </TouchableOpacity>
-              <Text preset="heading" text="Profile" style={themed($headerTitle)} />
-              <TouchableOpacity
-                onPress={() => setIsSidebarExtended(!isSidebarExtended)}
-                style={themed($menuButton)}
-              >
-                <Icon icon="menu" size={isMobile ? 28 : 24} />
-              </TouchableOpacity>
-            </View>
+                                    {/* Header */}
+                                    <View style={themed($header)}>
+                                      <PressableIcon
+                                        icon="caretLeft"
+                                        size={isMobile ? 28 : 24}
+                                        color="#999"
+                                                        onPress={() => {
+                                                          if (_props.navigation.canGoBack()) {
+                                                            _props.navigation.goBack()
+                                                          } else {
+                                                            _props.navigation.navigate("AppTabs", { screen: "Chats" })
+                                                          }
+                                                        }}                                        accessibilityLabel="Go back"
+                                        containerStyle={themed($backButton)}
+                                      />                          <Text preset="heading" text="Profile" style={themed($headerTitle)} />
+                          <PressableIcon
+                            icon="menu"
+                            size={isMobile ? 28 : 24}
+                            onPress={() => setIsSidebarExtended(!isSidebarExtended)}
+                            accessibilityLabel="Toggle sidebar"
+                            containerStyle={themed($menuButton)}
+                          />
+                        </View>
             
             {/* Profile Section */}
             <View style={themed($profileContainer)}>
@@ -214,7 +222,7 @@ export const DemoProfileScreen: FC<AppStackScreenProps<"DemoProfile">> =
             <View style={themed($buttonContainer)}>
               <Button
                 text="Back to Chats"
-                onPress={() => _props.navigation.navigate("Demo" as any)}
+                onPress={() => _props.navigation.navigate("AppTabs", { screen: "Chats" })}
                 style={themed($backButton)}
               />
             </View>
@@ -334,7 +342,7 @@ const $sidebarItemText: ThemedStyle<TextStyle> = ({ colors }) => ({
 })
 
 const $unreadBadge: ThemedStyle<ViewStyle> = ({ colors }) => ({
-  backgroundColor: colors.palette.primary500,
+  backgroundColor: colors.palette.brand500,
   borderRadius: 10,
   minWidth: 20,
   height: 20,
@@ -363,7 +371,7 @@ const $miniUnreadDot: ThemedStyle<ViewStyle> = ({ colors }) => ({
   width: 8,
   height: 8,
   borderRadius: 4,
-  backgroundColor: colors.palette.primary500,
+  backgroundColor: colors.palette.brand500,
   marginTop: 2,
 })
 
