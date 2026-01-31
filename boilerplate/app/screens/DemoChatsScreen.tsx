@@ -31,7 +31,7 @@ export const DemoChatsScreen: FC<DemoTabScreenProps<"DemoChats">> =
           tx="demoChatsScreen:joinDiscordLink"
           leftIcon="slack"
           rightIcon={isRTL ? "caretLeft" : "caretRight"}
-          onPress={() => openLinkInBrowser("https://discord.gg/infinite-red")}
+          onPress={() => _props.navigation.getParent()?.navigate("DemoProfile")}
         />
         <Text
           preset="subheading"
@@ -43,7 +43,7 @@ export const DemoChatsScreen: FC<DemoTabScreenProps<"DemoChats">> =
           tx="demoChatsScreen:contributeToChatsLink"
           leftIcon="github"
           rightIcon={isRTL ? "caretLeft" : "caretRight"}
-          onPress={() => openLinkInBrowser("https://github.com/infinitered/ignite")}
+          onPress={() => _props.navigation.getParent()?.navigate("DemoProfile")}
         />
 
         <Text
@@ -61,7 +61,7 @@ export const DemoChatsScreen: FC<DemoTabScreenProps<"DemoChats">> =
               <Image source={reactNativeRadioLogo} style={$logo} />
             </View>
           }
-          onPress={() => openLinkInBrowser("https://reactnativeradio.com/")}
+          onPress={() => _props.navigation.getParent()?.navigate("DemoProfile")}
         />
         <ListItem
           tx="demoChatsScreen:reactNativeNewsletterLink"
@@ -72,7 +72,7 @@ export const DemoChatsScreen: FC<DemoTabScreenProps<"DemoChats">> =
               <Image source={reactNativeNewsletterLogo} style={$logo} />
             </View>
           }
-          onPress={() => openLinkInBrowser("https://reactnativenewsletter.com/")}
+          onPress={() => _props.navigation.getParent()?.navigate("DemoProfile")}
         />
         <ListItem
           tx="demoChatsScreen:reactNativeLiveLink"
@@ -83,7 +83,7 @@ export const DemoChatsScreen: FC<DemoTabScreenProps<"DemoChats">> =
               <Image source={reactNativeLiveLogo} style={$logo} />
             </View>
           }
-          onPress={() => openLinkInBrowser("https://rn.live/")}
+          onPress={() => _props.navigation.getParent()?.navigate("DemoProfile")}
         />
         <ListItem
           tx="demoChatsScreen:chainReactConferenceLink"
@@ -93,7 +93,7 @@ export const DemoChatsScreen: FC<DemoTabScreenProps<"DemoChats">> =
               <Image source={chainReactLogo} style={$logo} />
             </View>
           }
-          onPress={() => openLinkInBrowser("https://cr.infinite.red/")}
+          onPress={() => _props.navigation.getParent()?.navigate("DemoProfile")}
         />
         <Text
           preset="subheading"
@@ -105,13 +105,13 @@ export const DemoChatsScreen: FC<DemoTabScreenProps<"DemoChats">> =
           tx="demoChatsScreen:hireUsLink"
           leftIcon="clap"
           rightIcon={isRTL ? "caretLeft" : "caretRight"}
-          onPress={() => openLinkInBrowser("https://infinite.red/contact")}
+          onPress={() => _props.navigation.getParent()?.navigate("DemoProfile")}
         />
         
         <View style={themed($buttonContainer)}>
           <Button
             text="Explore"
-            onPress={() => _props.navigation.navigate("DemoExplore")}
+            onPress={() => _props.navigation.getParent()?.navigate("DemoExplore")}
             style={themed($exploreButton)}
           />
         </View>

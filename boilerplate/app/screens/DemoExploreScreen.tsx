@@ -9,6 +9,7 @@ import {
   Platform,
   StyleSheet,
   TextStyle,
+  TouchableOpacity,
   View,
   ViewStyle,
 } from "react-native"
@@ -30,7 +31,7 @@ import { Switch } from "@/components/Toggle/Switch"
 import { useEpisodes, useEpisode } from "@/context/EpisodeContext"
 import { isRTL } from "@/i18n"
 import { translate } from "@/i18n/translate"
-import { DemoTabScreenProps } from "@/navigators/navigationTypes"
+import { DemoTabScreenProps, AppStackScreenProps } from "@/navigators/navigationTypes"
 import type { EpisodeItem } from "@/services/api/types"
 import { useAppTheme } from "@/theme/context"
 import { $styles } from "@/theme/styles"
@@ -46,7 +47,7 @@ const rnrImage3 = require("@assets/images/demo/rnr-image-3.png")
 
 const rnrImages = [rnrImage1, rnrImage2, rnrImage3]
 
-export const DemoExploreScreen: FC<DemoTabScreenProps<"DemoExplore">> = (_props) => {
+export const DemoExploreScreen: FC<AppStackScreenProps<"DemoExplore">> = (_props) => {
   const { themed } = useAppTheme()
   const {
     totalEpisodes,
@@ -214,7 +215,7 @@ const ExploreItemCard = ({
     openLinkInBrowser(exploreItem.enclosure.link)
   }
 
-  const ButtonLeftAccessory: ComponentType<ButtonAccessoryProps> = useMemo(
+  const ButtonLeftAccessory: ComponentType<any> = useMemo(
     () =>
       function ButtonLeftAccessory() {
         return (
@@ -229,8 +230,8 @@ const ExploreItemCard = ({
             >
               <Icon
                 icon="heart"
+                color={colors.palette.neutral400}
                 size={ICON_SIZE}
-                color={colors.palette.neutral800} // dark grey
               />
             </Animated.View>
             <Animated.View
@@ -238,8 +239,8 @@ const ExploreItemCard = ({
             >
               <Icon
                 icon="heart"
+                color={colors.palette.primary500}
                 size={ICON_SIZE}
-                color={colors.palette.primary400} // pink
               />
             </Animated.View>
           </View>
@@ -257,14 +258,12 @@ const ExploreItemCard = ({
       HeadingComponent={
         <View style={[$styles.row, themed($metadata)]}>
           <Text
-            style={themed($metadataText)}
             size="xxs"
             accessibilityLabel={datePublished.accessibilityLabel}
           >
             {datePublished.textLabel}
           </Text>
           <Text
-            style={themed($metadataText)}
             size="xxs"
             accessibilityLabel={duration.accessibilityLabel}
           >
@@ -280,7 +279,7 @@ const ExploreItemCard = ({
       {...accessibilityHintProps}
       RightComponent={<Image source={imageUri} style={themed($itemThumbnail)} />}
       FooterComponent={
-        <Button
+        <TouchableOpacity
           onPress={handlePressFavorite}
           onLongPress={handlePressFavorite}
           style={themed([$favoriteButton, isFavorite && $unFavoriteButton])}
@@ -289,19 +288,20 @@ const ExploreItemCard = ({
               ? translate("demoExploreScreen:accessibility.unfavoriteIcon")
               : translate("demoExploreScreen:accessibility.favoriteIcon")
           }
-          LeftAccessory={ButtonLeftAccessory}
         >
-          <Text
-            size="xxs"
-            accessibilityLabel={duration.accessibilityLabel}
-            weight="medium"
-            text={
-              isFavorite
-                ? translate("demoExploreScreen:unfavoriteButton")
-                : translate("demoExploreScreen:favoriteButton")
-            }
-          />
-        </Button>
+          <View style={[$styles.row, { alignItems: "center" }]}>
+            <ButtonLeftAccessory />
+            <Text
+              size="xxs"
+              weight="medium"
+              text={
+                isFavorite
+                  ? translate("demoExploreScreen:unfavoriteButton")
+                  : translate("demoExploreScreen:favoriteButton")
+              }
+            />
+          </View>
+        </TouchableOpacity>
       }
     />
   )
@@ -345,8 +345,7 @@ const $iconContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginEnd: spacing.sm,
 })
 
-const $metadata: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
-  color: colors.textDim,
+const $metadata: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginTop: spacing.xs,
 })
 

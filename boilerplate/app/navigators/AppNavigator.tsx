@@ -16,8 +16,12 @@ import { WelcomeScreen } from "@/screens/WelcomeScreen"
 import { useAppTheme } from "@/theme/context"
 
 import { DemoNavigator } from "./DemoNavigator" // @demo remove-current-line
+import { DemoExploreScreen } from "@/screens/DemoExploreScreen"
+import { DemoProfileScreen } from "@/screens/DemoProfileScreen"
+import { EpisodeProvider } from "@/context/EpisodeContext"
 import type { AppStackParamList, NavigationProps } from "./navigationTypes"
 import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
+import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 
 /**
  * This is a list of all the route names that will exit the app if the back button
@@ -54,6 +58,15 @@ const AppStack = () => {
           <Stack.Screen name="Welcome" component={WelcomeScreen} />
           {/* @demo remove-block-start */}
           <Stack.Screen name="Demo" component={DemoNavigator} />
+          <Stack.Screen 
+            name="DemoExplore" 
+            component={(props: NativeStackScreenProps<AppStackParamList, "DemoExplore">) => (
+              <EpisodeProvider>
+                <DemoExploreScreen {...props} />
+              </EpisodeProvider>
+            )} 
+          />
+          <Stack.Screen name="DemoProfile" component={DemoProfileScreen} />
         </>
       ) : (
         <>

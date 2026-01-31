@@ -17,6 +17,7 @@ export type DemoTabParamList = {
   DemoExplore: undefined
   DemoSettings: undefined
   DemoUsername: undefined
+  DemoProfile: undefined
 }
 
 // App Stack Navigator types
@@ -25,6 +26,8 @@ export type AppStackParamList = {
   Login: undefined
   SignUp: undefined
   Demo: NavigatorScreenParams<DemoTabParamList>
+  DemoExplore: undefined
+  DemoProfile: undefined
   // 🔥 Your screens go here
   // IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
 }
